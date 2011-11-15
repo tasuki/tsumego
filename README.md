@@ -23,7 +23,7 @@ What's included?
 * fonts -- Type1 fonts; Metafont fonts look ugly as hell in pdf cause they're
   bitmaps.
 * macros -- The two macro files from sgf2dg that you will definitely need. For
-  further reference, [google sgf2dg](http://www.google.com/?q=sgf2dg).
+  further reference, [google sgf2dg](http://www.google.com/search?q=sgf2dg).
 * scripts -- Scripts I wrote when creating the pdf's. Might have been
   customized for each book.
 
