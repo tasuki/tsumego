@@ -1,13 +1,16 @@
-default: book-cho-1-elementary.pdf book-cho-2-intermediate.pdf book-cho-3-advanced.pdf
+default: book-cho-1-elementary.pdf book-cho-2-intermediate.pdf book-cho-3-advanced.pdf book-gokyoshumyo.pdf
 
-book-cho-1-elementary.pdf: include-a5.tex include-a5-gotc.tex include-motto.tex book-cho-1-elementary.tex
+book-cho-1-elementary.pdf: include-a5.tex include-a5-gotc.tex include-motto.tex book-cho-1-elementary.tex problems-cho-1.tex
 	pdftex book-cho-1-elementary.tex
 
-book-cho-2-intermediate.pdf: include-a5.tex include-a5-gotc.tex include-motto.tex book-cho-2-intermediate.tex
+book-cho-2-intermediate.pdf: include-a5.tex include-a5-gotc.tex include-motto.tex book-cho-2-intermediate.tex problems-cho-2.tex
 	pdftex book-cho-2-intermediate.tex
 
-book-cho-3-advanced.pdf: include-a5.tex include-a5-gotc.tex include-motto.tex book-cho-3-advanced.tex
+book-cho-3-advanced.pdf: include-a5.tex include-a5-gotc.tex include-motto.tex book-cho-3-advanced.tex problems-cho-3.tex
 	pdftex book-cho-3-advanced.tex
+
+book-gokyoshumyo.pdf: include-a5.tex include-a5-gotc.tex include-motto.tex book-gokyoshumyo.tex problems-gokyoshumyo.tex
+	pdftex book-gokyoshumyo.tex
 
 clean:
 	rm *.log
