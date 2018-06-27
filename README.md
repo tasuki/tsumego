@@ -1,12 +1,8 @@
-What the fuck?
+What the hell?
 ==============
 
-First, I am sorry. This project is the biggest mess. Feel free to play around
-with it, but bear in mind that **making this work will likely require
-nontrivial amount of effort**.
-
-Feel free to fork. Or rather create a new project altogether. I am deeply
-convinced this can no longer be beaten into reasonable shape.
+First, I am sorry. This project is the biggest mess. If you want to learn best
+practices, just look here and do everything differently!
 
 A bit of history
 ----------------
@@ -16,18 +12,14 @@ young and naive. Also didn't understand the importance of writing maintainable
 code. As a result, this was mostly created by copying few scripts around and
 modifying each of them to fit the particular sgf/tex files.
 
-What's included?
-----------------
+Get it running
+---------------------
 
-* books -- Contains the .tex files from which the pdf's were produced.
-* fonts -- Type1 fonts; Metafont fonts look ugly as hell in pdf cause they're
-  bitmaps.
-* macros -- The two macro files from sgf2dg that you will definitely need. For
-  further reference, [google sgf2dg](http://www.google.com/search?q=sgf2dg).
-* scripts -- Scripts I wrote when creating the pdf's. Might have been
-  customized for each book.
+As of 2018 I can get it running on Ubuntu with `texlive`.
 
-Is that enough to get it running? I don't know.
+	updmap --enable Map=gooe.map
+
+Use `pdftex` to generate the pdfs.
 
 Thanks
 ------
