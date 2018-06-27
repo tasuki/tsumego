@@ -11,3 +11,4 @@ book-cho-3-advanced.pdf: include-a5.tex include-a5-gotc.tex include-motto.tex bo
 
 clean:
 	rm *.log
+	rm book*.pdf
