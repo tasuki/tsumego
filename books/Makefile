@@ -39,5 +39,20 @@ a6-hatsuyoron.pdf: includes/a6*.tex a6-hatsuyoron.tex content/hatsuyoron.tex pro
 	pdftex a6-hatsuyoron.tex
 
 
+pub: default
+	mkdir -p pub
+	cp a5-cho-1-elementary.pdf pub/cho-1-elementary.pdf
+	cp a6-cho-1-elementary.pdf pub/cho-1-elementary-mobile.pdf
+	cp a5-cho-2-intermediate.pdf pub/cho-2-intermediate.pdf
+	cp a6-cho-2-intermediate.pdf pub/cho-2-intermediate-mobile.pdf
+	cp a5-cho-3-advanced.pdf pub/cho-3-advanced.pdf
+	cp a6-cho-3-advanced.pdf pub/cho-3-advanced-mobile.pdf
+	cp a5-gokyoshumyo.pdf pub/gokyoshumyo.pdf
+	cp a6-gokyoshumyo.pdf pub/gokyoshumyo-mobile.pdf
+	cp a5-xxqj.pdf pub/xxqj.pdf
+	cp a6-xxqj.pdf pub/xxqj-mobile.pdf
+	cp a5-hatsuyoron.pdf pub/hatsuyoron.pdf
+	cp a6-hatsuyoron.pdf pub/hatsuyoron-mobile.pdf
+
 clean:
 	rm -rf *.log *.pdf
