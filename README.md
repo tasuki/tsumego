@@ -15,11 +15,10 @@ modifying each of them to fit the particular sgf/tex files.
 Get it running
 ---------------------
 
-As of 2018 I can get it running on Ubuntu with `texlive`.
+As of 2018 I can get it running on Ubuntu with `texlive` and Kashomon's [go-type1](https://github.com/Kashomon/go-type1).
 
-	updmap --enable Map=gooe.map
-
-Use `pdftex` to generate the pdfs.
+	cd books
+	make
 
 Thanks
 ------
