@@ -2,8 +2,8 @@
 
 cd zal
 
-ls prob*.sgf | xargs -P8 -i sh -c '../rotate.pl {} > zz{}'
-ls prob*.sgf | xargs -P8 -i sh -c 'sgf2dg -b `head -n 1 zz{}` -twoColumn zz{}'
+ls prob*.sgf | tac | xargs -P8 -i sh -c '../rotate.pl {} > zz{}'
+ls prob*.sgf | tac | xargs -P8 -i sh -c 'sgf2dg -b `head -n 1 zz{}` -twoColumn zz{}'
 
 echo '
 \magnification=800
