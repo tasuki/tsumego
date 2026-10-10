@@ -4,7 +4,7 @@
    /Title (Gokyo Shumyo)
    /Creator (TeX)
    /Author (Vit Brunner)
-   /CreationDate (20180627233500)
+   /CreationDate (20261111233500)
 }
 
 ~
@@ -23,37 +23,37 @@
 \bigskip
 {\header Preface}
 \medskip
-Gokyo Shumyo is a classical problem collection published by Hayashi Genbi in 1822. Its name could be translated to English as ``Brilliances from go classics''\negthinspace. The collection consists of 520 problems, all shown with black to play, which are divided into the following seven sections:
+Gokyo Shumyo is a classical problem collection published by Hayashi Genbi in 1822. Its name could be translated to English as ``Brilliances from go classics''\negthinspace. The collection consists of 520 problems, all shown as {\bf black to play}.
 \bigskip
-
-1. Living (103 problems)\dotfill 1
-
-2. Killing (71 problems)\dotfill 10
-
-3. Creating a ko (90 problems)\dotfill 17
-
-4. Capturing races (96 problems)\dotfill 25
-
-5. Oiotoshi (40 problems)\dotfill 34
-
-6. Connecting (74 problems)\dotfill 38
-
-7. Various techniques (46 problems)\dotfill 46
 
 \bigskip
 
-I wish you to enjoy and improve while studying these problems,
-
-\rightline{\it\me}
-\rightline{\it December 2006}
-
-\bigskip
-\noindent{\header Anniversary edition}
+\def\chapterentry#1#2#3{%
+  \hbox to \hsize{\strut
+    \pdfstartlink attr{/Border [0 0 0]} goto name {problem-#1-1}%
+    #1. #2 (#3 problems)\dotfill \chapterpage{#1}%
+    \pdfendlink}}
+\vbox{
+\noindent{\header Sections}
 \medskip
-\noindent It's been 11 and a half years. This booklet has been downloaded over twenty thousand times. I never imagined the reach it would have. The anniversary edition comes with a better layout and wording.
+\chapterentry{1}{Living}{103}
+\chapterentry{2}{Killing}{71}
+\chapterentry{3}{Creating a ko}{90}
+\chapterentry{4}{Capturing races}{96}
+\chapterentry{5}{Oiotoshi}{40}
+\chapterentry{6}{Connecting}{74}
+\chapterentry{7}{Various techniques}{46}
+}
+
+\bigskip
+
+\bigskip
+\noindent{\header Third edition note}
+\medskip
+\noindent Originally published 2006, it's been twenty years. This booklet has been downloaded over a hundred thousand times. I never imagined the reach it would have.
 
 \rightline{\it\me}
-\rightline{\it June 2018}
+\rightline{\it November 2026}
 \vfill\break
 
 \input includes/\format-gotc

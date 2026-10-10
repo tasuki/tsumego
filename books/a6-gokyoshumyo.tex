@@ -1,4 +1,6 @@
 \def\format{a6}
 \def\titleimagewidth{6cm}
+% Content-relative page on which each chapter begins.
+\def\chapterpage#1{\ifcase#1\or1\or40\or66\or98\or134\or149\or182\fi}
 
 \input content/gokyoshumyo

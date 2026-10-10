@@ -585,6 +585,12 @@ def render_tex(
                 [rf"\vskip {leading_rows[column_index]}\goIntHt", ""]
             )
         for problem_index, (problem, padding) in enumerate(column):
+            # Gokyo Shumyo identifiers are chapter-problem pairs.  Give the
+            # first problem of each chapter a stable target for its contents.
+            if re.fullmatch(r"\d+-1", problem.identifier):
+                chunks.extend(
+                    [rf"\pdfdest name {{problem-{problem.identifier}}} xyz", ""]
+                )
             chunks.append(r"\vbox{\vbox{\goo")
             label_at = {(x, y): label for x, y, label in problem.labels}
             for y in range(_render_height(problem) + padding):

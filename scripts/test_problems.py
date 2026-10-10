@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -74,8 +75,37 @@ class ProblemDataTests(unittest.TestCase):
             sgf_path = Path(directory) / "problems.sgf"
             problems.render_tex(source, tex_path, "a5")
             problems.write_sgf(source, sgf_path)
-            self.assertEqual(8, tex_path.read_text().count(r"\!  A"))
+            tex = tex_path.read_text()
+            self.assertEqual(8, tex.count(r"\!  A"))
             self.assertEqual(8, sgf_path.read_text().count(":A]"))
+            for chapter in range(1, 8):
+                self.assertIn(
+                    rf"\pdfdest name {{problem-{chapter}-1}} xyz", tex
+                )
+
+    def test_gokyo_contents_pages_match_layouts(self) -> None:
+        source = problems.read_ascii(BOOKS / "problems" / "gokyoshumyo.txt")
+        for profile in ("a5", "a6"):
+            columns = problems.plan_layout(source, profile)
+            actual: list[int] = []
+            for column_index, column in enumerate(columns):
+                page = column_index // 2 + 1 if profile == "a5" else column_index + 1
+                for problem, _ in column:
+                    if re.fullmatch(r"\d+-1", problem.identifier):
+                        actual.append(page)
+
+            wrapper = (BOOKS / f"{profile}-gokyoshumyo.tex").read_text()
+            match = re.search(
+                r"\\def\\chapterpage#1\{\\ifcase#1((?:\\or\d+)+)\\fi\}",
+                wrapper,
+            )
+            self.assertIsNotNone(match)
+            listed = [
+                int(page)
+                for page in match.group(1).split(r"\or")
+                if page
+            ]
+            self.assertEqual(actual, listed)
 
     def test_normalization_prefers_short_then_narrow(self) -> None:
         original = problems.Problem(
