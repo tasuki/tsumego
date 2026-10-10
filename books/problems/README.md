@@ -43,11 +43,18 @@ From the `books` directory:
 make test
 
 # Generate input for the existing Plain TeX books
-../scripts/problems.py render-tex --profile a5 problems/xxqj.txt generated/a5-xxqj.tex
+../scripts/problems.py render-tex --profile a5 \
+    problems/xxqj.txt generated/a5-xxqj.tex
 
 # Export a standard SGF collection
 ../scripts/problems.py export-sgf problems/xxqj.txt /tmp/xxqj.sgf
 ```
 
-Generated TeX is a build artifact. A5 and A6 are separate rendering profiles so
-their diagram sizing and layout can diverge without changing problem data.
+Generated TeX is a build artifact. A5 and A6 are separately paginated so their
+diagram sizing and layout can diverge without changing problem data. A5 columns
+are padded to the same total height. Full-height columns and matching bottoms
+come first; when several layouts are otherwise equivalent, neighboring problem
+tops and captions are aligned, then matching heights are preferred. Diagrams
+always retain an empty row after the
+stones; heights 15 through 18 are avoided by expanding such diagrams to the
+full 19 rows.

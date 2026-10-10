@@ -12,6 +12,7 @@ import argparse
 import re
 import sys
 from dataclasses import dataclass
+from functools import cache
 from pathlib import Path
 from typing import Iterable, Sequence
 
@@ -293,42 +294,328 @@ def _background(x: int, y: int) -> str:
     return "*" if x in (3, 9, 15) and y in (3, 9, 15) else "+"
 
 
-def render_tex(problems: Sequence[Problem], path: Path, profile: str) -> None:
+# Every vertical unit is exactly one board row.  A problem's caption and the
+# space around it occupy exactly two such rows, giving both formats a regular
+# baseline grid. These budgets define the usable height of a generated column.
+_PROFILE_METRICS = {
+    "a5": (1, 2, 56),   # board row, caption area, column height
+    "a6": (1, 2, 30),
+}
+_INTER_PROBLEM_ROWS = 1
+
+
+@cache
+def _render_height(problem: Problem) -> int:
+    """Return an allowed height while preserving an empty row after stones."""
+    if 15 <= problem.height <= 18:
+        return BOARD_SIZE
+    return problem.height
+
+
+def _column_natural_units(group: Sequence[Problem], profile: str) -> int:
+    row_unit, caption_rows, _ = _PROFILE_METRICS[profile]
+    problem_units = sum(
+        _render_height(problem) * row_unit + caption_rows for problem in group
+    )
+    gaps = max(0, len(group) - 1) * _INTER_PROBLEM_ROWS
+    return problem_units + gaps
+
+
+def _available_padding(group: Sequence[Problem], profile: str) -> int:
+    _, _, budget = _PROFILE_METRICS[profile]
+    natural = _column_natural_units(group, profile)
+    if natural > budget:
+        raise ValueError(
+            f"{profile} layout column is too tall ({natural} > {budget} lines)"
+        )
+    return budget - natural
+
+
+def _allowed_paddings(problem: Problem, maximum: int) -> tuple[int, ...]:
+    """Return padding values that never produce a 15--18-row diagram."""
+    height = _render_height(problem)
+    if height == BOARD_SIZE:
+        return (0,)
+    values = list(range(min(14 - height, maximum) + 1))
+    full_board_padding = BOARD_SIZE - height
+    if full_board_padding <= maximum:
+        values.append(full_board_padding)
+    return tuple(values)
+
+
+def _waterfill_padding(group: Sequence[Problem], available: int) -> list[int]:
+    """Use as many whole rows as possible, then favor even diagram heights."""
+    # used rows -> (negative sum of squared heights, padding)
+    states: dict[int, tuple[int, tuple[int, ...]]] = {0: (0, ())}
+    for problem in group:
+        next_states: dict[int, tuple[int, tuple[int, ...]]] = {}
+        for used, (balance, padding) in states.items():
+            for add in _allowed_paddings(problem, available - used):
+                new_used = used + add
+                candidate = (
+                    balance - (_render_height(problem) + add) ** 2,
+                    padding + (add,),
+                )
+                previous = next_states.get(new_used)
+                if previous is None or candidate[0] > previous[0]:
+                    next_states[new_used] = candidate
+        states = next_states
+    _, result = max(states.items(), key=lambda item: (item[0], item[1][0]))
+    return list(result[1])
+
+
+def _balanced_padding(
+    left: Sequence[Problem], right: Sequence[Problem]
+) -> tuple[list[int], list[int]]:
+    """Fill both A5 columns, preferring matching bottoms and neighbor heights."""
+    available_left = _available_padding(left, "a5")
+    available_right = _available_padding(right, "a5")
+    count = max(len(left), len(right))
+
+    row_unit, caption_rows, _ = _PROFILE_METRICS["a5"]
+    base_left = [0]
+    for index, problem in enumerate(left):
+        gap = _INTER_PROBLEM_ROWS if index < len(left) - 1 else 0
+        base_left.append(
+            base_left[-1] + _render_height(problem) * row_unit + caption_rows + gap
+        )
+    base_right = [0]
+    for index, problem in enumerate(right):
+        gap = _INTER_PROBLEM_ROWS if index < len(right) - 1 else 0
+        base_right.append(
+            base_right[-1] + _render_height(problem) * row_unit + caption_rows + gap
+        )
+
+    # State score: aligned tops/captions, proximity, equal heights, balance.
+    states: dict[
+        tuple[int, int],
+        tuple[int, int, int, int, tuple[int, ...], tuple[int, ...]],
+    ] = {(0, 0): (0, 0, 0, 0, (), ())}
+    for index in range(count):
+        next_states: dict[
+            tuple[int, int],
+            tuple[int, int, int, int, tuple[int, ...], tuple[int, ...]],
+        ] = {}
+        has_left = index < len(left)
+        has_right = index < len(right)
+        for (used_left, used_right), state in states.items():
+            aligned, distance, equal, balance, pads_left, pads_right = state
+            left_values = (
+                _allowed_paddings(left[index], available_left - used_left)
+                if has_left
+                else (0,)
+            )
+            right_values = (
+                _allowed_paddings(right[index], available_right - used_right)
+                if has_right
+                else (0,)
+            )
+            start_left = base_left[index] + used_left if has_left else 0
+            start_right = base_right[index] + used_right if has_right else 0
+            for add_left in left_values:
+                for add_right in right_values:
+                    new_aligned = aligned
+                    new_distance = distance
+                    new_equal = equal
+                    new_balance = balance
+                    if has_left:
+                        height_left = _render_height(left[index]) + add_left
+                        new_balance -= height_left**2
+                    if has_right:
+                        height_right = _render_height(right[index]) + add_right
+                        new_balance -= height_right**2
+                    if has_left and has_right:
+                        caption_left = start_left + height_left
+                        caption_right = start_right + height_right
+                        new_aligned += int(start_left == start_right) + int(
+                            caption_left == caption_right
+                        )
+                        new_distance -= abs(start_left - start_right) + abs(
+                            caption_left - caption_right
+                        )
+                        new_equal += int(height_left == height_right)
+                    key = (used_left + add_left, used_right + add_right)
+                    candidate = (
+                        new_aligned,
+                        new_distance,
+                        new_equal,
+                        new_balance,
+                        pads_left + ((add_left,) if has_left else ()),
+                        pads_right + ((add_right,) if has_right else ()),
+                    )
+                    previous = next_states.get(key)
+                    if previous is None or candidate[:4] > previous[:4]:
+                        next_states[key] = candidate
+        states = next_states
+
+    natural_left = _column_natural_units(left, "a5")
+    natural_right = _column_natural_units(right, "a5")
+    _, result = max(
+        states.items(),
+        key=lambda item: (
+            -abs(
+                natural_left + item[0][0] - natural_right - item[0][1]
+            ),
+            min(natural_left + item[0][0], natural_right + item[0][1]),
+            item[1][0],
+            item[1][1],
+            item[1][2],
+            item[1][3],
+        ),
+    )
+    return list(result[4]), list(result[5])
+
+
+def paginate(problems: Sequence[Problem], profile: str) -> list[tuple[int, ...]]:
+    """Choose fresh page boundaries; preserving historical pages is not a goal."""
+    _, _, budget = _PROFILE_METRICS[profile]
+    pages: list[tuple[int, ...]] = []
+    offset = 0
+
+    if profile == "a6":
+        while offset < len(problems):
+            count = 1
+            while (
+                offset + count < len(problems)
+                and _column_natural_units(
+                    problems[offset : offset + count + 1], profile
+                )
+                <= budget
+            ):
+                count += 1
+            pages.append((count,))
+            offset += count
+        return pages
+
+    while offset < len(problems):
+        remaining = len(problems) - offset
+        candidates: list[tuple[tuple[int, int, int, int], int, int]] = []
+        for left_count in range(1, remaining + 1):
+            left = problems[offset : offset + left_count]
+            left_height = _column_natural_units(left, profile)
+            if left_height > budget:
+                break
+            right_limit = remaining - left_count
+            if right_limit == 0:
+                candidates.append(
+                    ((left_count, -left_count, -left_height, 0), left_count, 0)
+                )
+                continue
+            for right_count in range(1, right_limit + 1):
+                right = problems[
+                    offset + left_count : offset + left_count + right_count
+                ]
+                right_height = _column_natural_units(right, profile)
+                if right_height > budget:
+                    break
+                score = (
+                    left_count + right_count,
+                    -abs(left_count - right_count),
+                    -abs(left_height - right_height),
+                    left_height + right_height,
+                )
+                candidates.append((score, left_count, right_count))
+        if not candidates:
+            raise ValueError(f"could not paginate {problems[offset].identifier}")
+        _, left_count, right_count = max(candidates)
+        pages.append((left_count, right_count))
+        offset += left_count + right_count
+    return pages
+
+
+def plan_layout(
+    problems: Sequence[Problem], profile: str
+) -> list[list[tuple[Problem, int]]]:
+    pages = paginate(problems, profile)
+    columns: list[list[tuple[Problem, int]]] = []
+    offset = 0
+    for page in pages:
+        groups: list[Sequence[Problem]] = []
+        for count in page:
+            groups.append(problems[offset : offset + count])
+            offset += count
+        if profile == "a5":
+            paddings = _balanced_padding(groups[0], groups[1])
+        else:
+            paddings = (
+                _waterfill_padding(groups[0], _available_padding(groups[0], profile)),
+            )
+        for group, padding in zip(groups, paddings):
+            columns.append(list(zip(group, padding)))
+    return columns
+
+
+def render_tex(
+    problems: Sequence[Problem], path: Path, profile: str
+) -> None:
     """Render generated input for the existing go fonts and Plain TeX layout."""
-    if profile not in {"a5", "a6"}:
+    if profile not in _PROFILE_METRICS:
         raise ValueError(f"unknown output profile {profile!r}")
 
-    # Keep the historical full board width during the initial migration.  The
-    # separate profile argument deliberately makes later A5/A6 sizing changes
-    # independent of the canonical problem data.
     width = BOARD_SIZE
-    chunks = ["% Generated by tools/problems.py; do not edit.", ""]
-    for problem in problems:
-        chunks.append(r"\vbox{\vbox{\goo")
-        label_at = {(x, y): label for x, y, label in problem.labels}
-        for y in range(problem.height):
-            cells: list[str] = []
-            for x in range(width):
-                point = (x, y)
-                background = _background(x, y)
-                if point in problem.black:
-                    cells.append(r"\- @" + background)
-                elif point in problem.white:
-                    cells.append(r"\- !" + background)
-                elif point in label_at:
-                    cells.append(r"\!  " + label_at[point])
-                else:
-                    cells.append(r"\0??" + background)
-            chunks.append("".join(cells))
-        chunks.extend(
-            [
-                "}",
-                rf"\hfil problem {problem.identifier}\hfil\break",
-                "}",
-                "",
-                "",
-            ]
+    columns = plan_layout(problems, profile)
+
+    _, caption_rows, column_rows = _PROFILE_METRICS[profile]
+    used_rows = [
+        sum(
+            _render_height(problem) + padding + caption_rows
+            for problem, padding in column
         )
+        + max(0, len(column) - 1) * _INTER_PROBLEM_ROWS
+        for column in columns
+    ]
+    leading_rows = [0] * len(columns)
+    trailing_rows = [column_rows - used for used in used_rows]
+    if profile == "a5":
+        for index in range(0, len(columns), 2):
+            common_end = max(used_rows[index : index + 2])
+            for column_index in range(index, min(index + 2, len(columns))):
+                leading_rows[column_index] = common_end - used_rows[column_index]
+                trailing_rows[column_index] = column_rows - common_end
+
+    chunks = [
+        "% Generated by scripts/problems.py; do not edit.",
+        r"\offinterlineskip",
+        r"\setbox0\hbox{\gooegb +}\global\goIntHt=\ht0",
+        "",
+    ]
+    for column_index, column in enumerate(columns):
+        if leading_rows[column_index]:
+            chunks.extend(
+                [rf"\vskip {leading_rows[column_index]}\goIntHt", ""]
+            )
+        for problem_index, (problem, padding) in enumerate(column):
+            chunks.append(r"\vbox{\vbox{\goo")
+            label_at = {(x, y): label for x, y, label in problem.labels}
+            for y in range(_render_height(problem) + padding):
+                cells: list[str] = []
+                for x in range(width):
+                    point = (x, y)
+                    background = _background(x, y)
+                    if point in problem.black:
+                        cells.append(r"\- @" + background)
+                    elif point in problem.white:
+                        cells.append(r"\- !" + background)
+                    elif point in label_at:
+                        cells.append(r"\!  " + label_at[point])
+                    else:
+                        cells.append(r"\0??" + background)
+                chunks.append("".join(cells))
+            chunks.extend(
+                [
+                    "}",
+                    r"\vbox to 2\goIntHt{\vfil"
+                    + rf"\hbox to \hsize{{\hfil problem {problem.identifier}\hfil}}"
+                    + r"\vfil}",
+                    "}",
+                    "",
+                ]
+            )
+            if problem_index < len(column) - 1:
+                chunks.extend([r"\vskip \goIntHt", ""])
+        if trailing_rows[column_index]:
+            chunks.append(rf"\vskip {trailing_rows[column_index]}\goIntHt")
+        chunks.extend([r"\eject", ""])
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(chunks), encoding="utf-8")
 

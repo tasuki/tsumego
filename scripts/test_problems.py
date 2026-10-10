@@ -41,6 +41,32 @@ class ProblemDataTests(unittest.TestCase):
                     problems.write_ascii(source, destination)
                     self.assertEqual(source, problems.read_ascii(destination))
 
+    def test_page_layouts_are_valid(self) -> None:
+        for profile in ("a5", "a6"):
+            row_unit, overhead, budget = problems._PROFILE_METRICS[profile]
+            for source_path in sorted((BOOKS / "problems").glob("*.txt")):
+                with self.subTest(profile=profile, collection=source_path.stem):
+                    collection = problems.read_ascii(source_path)
+                    columns = problems.plan_layout(collection, profile)
+                    self.assertEqual(len(collection), sum(len(column) for column in columns))
+                    for column in columns:
+                        used = sum(
+                            (problems._render_height(problem) + padding) * row_unit
+                            + overhead
+                            for problem, padding in column
+                        ) + max(0, len(column) - 1) * problems._INTER_PROBLEM_ROWS
+                        self.assertLessEqual(used, budget)
+                        for problem, padding in column:
+                            height = problems._render_height(problem) + padding
+                            self.assertLessEqual(height, problems.BOARD_SIZE)
+                            self.assertFalse(15 <= height <= 18)
+                            if height < problems.BOARD_SIZE:
+                                occupied_rows = [
+                                    y
+                                    for _, y in problem.black | problem.white
+                                ] + [y for _, y, _ in problem.labels]
+                                self.assertLess(max(occupied_rows), height - 1)
+
     def test_outputs_preserve_labels(self) -> None:
         source = problems.read_ascii(BOOKS / "problems" / "gokyoshumyo.txt")
         with tempfile.TemporaryDirectory() as directory:
