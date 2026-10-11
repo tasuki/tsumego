@@ -1,4 +1,7 @@
-\magnification=850
+% Keep the existing pdfTeX primitives and legacy Palatino encoding under LuaTeX.
+\input luatex85.sty
+\input luaotfload.sty
+\def\fotenc{8t}
 \input cpalatin
 \tolerance=10000
 \raggedbottom
@@ -10,17 +13,30 @@
 \font\header=pplr8z at 18 pt
 \font\subtitle=pplr8z at 24 pt
 \font\title=pplri8z at 48 pt
+\font\cjktitle="[fonts/NotoSerifCJKtc-Regular.otf]:mode=node;script=hani;language=zht" at 20mm
+\font\japanesetitle="[fonts/NotoSerifCJKtc-Regular.otf]:mode=node;script=hani;language=jan" at 20mm
 \tenrm
 
 \advance\hoffset -1 true in
 \advance\hoffset 20 true mm
-\hsize=108 true mm
-\pdfpagewidth=148 true mm
+\hsize=108mm
+\hsize=\dimexpr\hsize*100/85\relax
+\pdfpagewidth=148mm
 
 \advance\voffset -1 true in
 \advance\voffset 16 true mm
-\vsize=170 true mm
-\pdfpageheight=210 true mm
+\vsize=200mm
+\pdfpageheight=210mm
+
+% LuaTeX's PDF backend ignores \mag; scale every page, including Go columns.
+\input atbegshi.sty
+\AtBeginShipout{%
+  \dimen0=.85\wd\AtBeginShipoutBox
+  \setbox\AtBeginShipoutBox=\hbox{%
+    \pdfsave\pdfsetmatrix{.85 0 0 .85}\rlap{\box\AtBeginShipoutBox}\pdfrestore}%
+  \wd\AtBeginShipoutBox=\dimen0
+  \ht\AtBeginShipoutBox=.85\ht\AtBeginShipoutBox
+  \dp\AtBeginShipoutBox=.85\dp\AtBeginShipoutBox}
 
 \nopagenumbers
 

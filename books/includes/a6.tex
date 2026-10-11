@@ -1,3 +1,7 @@
+% Keep the existing pdfTeX primitives and legacy Palatino encoding under LuaTeX.
+\input luatex85.sty
+\input luaotfload.sty
+\def\fotenc{8t}
 \input cpalatin
 \tolerance=10000
 \raggedbottom
@@ -9,17 +13,19 @@
 \font\header=pplb8z at 12 pt
 \font\subtitle=pplr8z at 18 pt
 \font\title=pplri8z at 36 pt
+\font\cjktitle="[fonts/NotoSerifCJKtc-Regular.otf]:mode=node;script=hani;language=zht" at 15mm
+\font\japanesetitle="[fonts/NotoSerifCJKtc-Regular.otf]:mode=node;script=hani;language=jan" at 15mm
 \tenrm
 
 \advance\hoffset -1 true in
 \advance\hoffset 12 true mm
 \hsize=81 true mm
-\pdfpagewidth=105 true mm
+\pdfpagewidth=105mm
 
 \advance\voffset -1 true in
 \advance\voffset 10 true mm
 \vsize=128 true mm
-\pdfpageheight=148 true mm
+\pdfpageheight=148mm
 
 \nopagenumbers
 
