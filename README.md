@@ -20,18 +20,21 @@ As of 2018 I can get it running on Ubuntu with `texlive` and Kashomon's [go-type
 	cd books
 	make
 
-CJK titles
-----------
+Fonts and CJK titles
+--------------------
 
 Books use plain LuaTeX (`luatex`, not `lualatex`), with `luaotfload` for OpenType
 fonts and `luatex85` for compatibility with the existing PDF primitives. On
 Debian/Ubuntu install `texlive-luatex` alongside the existing TeX dependencies.
-The Palatino text and Type 1 Go-diagram fonts are unchanged.
+Latin text uses bundled Alegreya Regular, Bold, and Italic OpenType fonts.
+The Type 1 Go-diagram fonts are unchanged.
 
-Noto Serif CJK TC Regular is bundled in `books/fonts/`, with its SIL Open Font
-License and pinned download instructions in `books/fonts/README.md`. No system
-font installation is needed. Japanese titles select the font's Japanese glyph
-forms; traditional Chinese titles select its Traditional Chinese forms.
+Alegreya and Noto Serif CJK TC Regular are bundled in `books/fonts/`, with their
+SIL Open Font Licenses and pinned download instructions in
+`books/fonts/README.md`. The styles load these files directly; no system font
+installation is needed for text or CJK titles. Japanese titles select Noto's
+Japanese glyph forms; traditional Chinese titles select its Traditional Chinese
+forms.
 
 Each title is ordinary Unicode text in its book's content `.tex` file, e.g.:
 

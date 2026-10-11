@@ -1,18 +1,16 @@
-% Keep the existing pdfTeX primitives and legacy Palatino encoding under LuaTeX.
+% Keep the existing pdfTeX primitives under LuaTeX; use OpenType text fonts.
 \input luatex85.sty
 \input luaotfload.sty
-\def\fotenc{8t}
-\input cpalatin
 \tolerance=10000
 \raggedbottom
 
-\font\label=pplri8z at 12 pt
-\font\tenrm=pplr8z at 12 pt
-\font\tenbf=pplb8z at 12 pt
-\font\tenit=pplri8z at 12 pt
-\font\header=pplr8z at 18 pt
-\font\subtitle=pplr8z at 24 pt
-\font\title=pplri8z at 48 pt
+\font\label="[fonts/Alegreya-Italic.otf]:mode=node;script=latn;+tlig;+tnum" at 13 pt
+\font\tenrm="[fonts/Alegreya-Regular.otf]:mode=node;script=latn;+tlig;+tnum" at 13 pt
+\font\tenbf="[fonts/Alegreya-Bold.otf]:mode=node;script=latn;+tlig;+tnum" at 13 pt
+\font\tenit="[fonts/Alegreya-Italic.otf]:mode=node;script=latn;+tlig;+tnum" at 13 pt
+\font\header="[fonts/Alegreya-Regular.otf]:mode=node;script=latn;+tlig;+tnum" at 19.5 pt
+\font\subtitle="[fonts/Alegreya-Regular.otf]:mode=node;script=latn;+tlig;+tnum" at 26 pt
+\font\title="[fonts/Alegreya-Italic.otf]:mode=node;script=latn;+tlig;+tnum" at 52 pt
 \font\cjktitle="[fonts/NotoSerifCJKtc-Regular.otf]:mode=node;script=hani;language=zht" at 20mm
 \font\japanesetitle="[fonts/NotoSerifCJKtc-Regular.otf]:mode=node;script=hani;language=jan" at 20mm
 \tenrm
@@ -40,4 +38,4 @@
 
 \nopagenumbers
 
-\def\me{V\hskip -.08em\char 237 t `\hskip -.08em tasuki' Brunner}
+\def\me{Vít `tasuki' Brunner}

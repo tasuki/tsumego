@@ -50,8 +50,9 @@ a6-hatsuyoron.pdf: includes/a6*.tex a6-hatsuyoron.tex content/hatsuyoron.tex gen
 	$(TEX) a6-hatsuyoron.tex
 
 
-# Both shared styles load the bundled font, including for Latin-only books.
-$(patsubst %.tex,%.pdf,$(wildcard a5-*.tex a6-*.tex)): fonts/NotoSerifCJKtc-Regular.otf
+# Both shared styles load the bundled fonts, including for Latin-only books.
+$(patsubst %.tex,%.pdf,$(wildcard a5-*.tex a6-*.tex)): fonts/NotoSerifCJKtc-Regular.otf \
+	fonts/Alegreya-Regular.otf fonts/Alegreya-Bold.otf fonts/Alegreya-Italic.otf
 
 
 generated/a5-%.tex: problems/%.txt ../scripts/problems.py
