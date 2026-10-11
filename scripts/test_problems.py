@@ -3,9 +3,13 @@
 
 from __future__ import annotations
 
+import csv
+import io
 import re
 import tempfile
 import unittest
+from contextlib import redirect_stdout
+from dataclasses import replace
 from pathlib import Path
 
 import problems
@@ -22,6 +26,7 @@ class ProblemDataTests(unittest.TestCase):
             "cho-2.txt": (861, 0),
             "cho-3.txt": (792, 0),
             "gokyoshumyo.txt": (520, 8),
+            "guan-zi-pu.txt": (1107, 0),
             "hatsuyoron.txt": (183, 0),
             "xxqj.txt": (347, 0),
         }
@@ -32,6 +37,185 @@ class ProblemDataTests(unittest.TestCase):
                 self.assertEqual(
                     label_count, sum(len(problem.labels) for problem in collection)
                 )
+
+    def test_guan_zi_pu_sgf_import(self) -> None:
+        source_directory = BOOKS / "sources" / "guan-zi-pu"
+        imported: list[problems.Problem] = []
+        for volume in range(1, 4):
+            imported.extend(
+                problems.read_sgf(
+                    source_directory / f"gzp{volume}.sgf",
+                    start_number=len(imported) + 1,
+                    default_player="W",
+                )
+            )
+        self.assertEqual(
+            [str(number) for number in range(1, 1478)],
+            [problem.identifier for problem in imported],
+        )
+        exact, _ = problems.deduplicate(imported)
+        self.assertEqual(355, len(imported) - len(exact))
+        unique, source_to_retained = problems.deduplicate(imported, symmetries=True)
+        self.assertEqual(15, len(exact) - len(unique))
+        self.assertEqual(370, len(imported) - len(unique))
+        retained_to_book = {
+            problem.identifier: str(number)
+            for number, problem in enumerate(unique, 1)
+        }
+        expected = [
+            replace(problem, identifier=retained_to_book[problem.identifier])
+            for problem in unique
+        ]
+        self.assertEqual(
+            problems.read_ascii(BOOKS / "problems" / "guan-zi-pu.txt"),
+            expected,
+        )
+        self.assertEqual(
+            len(unique), len(problems.deduplicate(expected, symmetries=True)[0])
+        )
+        with (source_directory / "source-map.csv").open(newline="") as source_map:
+            rows = list(csv.DictReader(source_map))
+        self.assertEqual(
+            [
+                {
+                    "source_problem": source_id,
+                    "book_problem": retained_to_book[retained_id],
+                    "kept_source_problem": retained_id,
+                }
+                for source_id, retained_id in source_to_retained.items()
+            ],
+            rows,
+        )
+
+    def test_deduplication_only_removes_exact_positions(self) -> None:
+        first = problems.Problem(
+            identifier="first",
+            black=frozenset({(0, 0), (2, 0)}),
+            white=frozenset({(1, 1)}),
+            labels=((3, 2, "A"), (4, 2, "B")),
+            width=6,
+            height=4,
+        )
+        duplicate = replace(
+            first, identifier="duplicate", width=19, height=19,
+            labels=tuple(reversed(first.labels)),
+        )
+        near = replace(first, identifier="near", black=first.black | {(2, 1)})
+        reflected = replace(
+            first, identifier="reflected", width=19, height=19,
+            black=frozenset((18 - x, y) for x, y in first.black),
+            white=frozenset((18 - x, y) for x, y in first.white),
+            labels=tuple((18 - x, y, label) for x, y, label in first.labels),
+        )
+        swapped = replace(
+            first, identifier="swapped", black=first.white, white=first.black,
+        )
+        relabelled = replace(
+            first, identifier="relabelled", labels=((3, 2, "B"), (4, 2, "A")),
+        )
+        unique, mapping = problems.deduplicate(
+            [first, duplicate, near, reflected, swapped, relabelled]
+        )
+        self.assertEqual([first, near, reflected, swapped, relabelled], unique)
+        self.assertEqual("first", mapping["duplicate"])
+        self.assertEqual("first", mapping["first"])
+        self.assertEqual(([], {}), problems.deduplicate([]))
+        self.assertEqual(unique, problems.deduplicate(unique)[0])
+
+    def test_deduplication_under_all_board_symmetries(self) -> None:
+        first = problems.Problem(
+            identifier="0",
+            black=frozenset({(0, 0), (2, 0)}),
+            white=frozenset({(1, 1)}),
+            labels=((3, 2, "A"), (4, 2, "B")),
+        )
+        variants = [
+            replace(
+                first, identifier=str(index),
+                black=frozenset(
+                    problems._transform_point(index, x, y) for x, y in first.black
+                ),
+                white=frozenset(
+                    problems._transform_point(index, x, y) for x, y in first.white
+                ),
+                labels=tuple(
+                    (*problems._transform_point(index, x, y), label)
+                    for x, y, label in first.labels
+                ),
+            )
+            for index in range(8)
+        ]
+        near = replace(first, identifier="near", black=first.black | {(2, 1)})
+        swapped = replace(
+            first, identifier="swapped", black=first.white, white=first.black,
+        )
+        shifted = replace(
+            first, identifier="shifted",
+            black=frozenset((x + 1, y) for x, y in first.black),
+            white=frozenset((x + 1, y) for x, y in first.white),
+            labels=tuple((x + 1, y, label) for x, y, label in first.labels),
+        )
+        relabelled = replace(
+            first, identifier="relabelled", labels=((3, 2, "B"), (4, 2, "A")),
+        )
+        unique, mapping = problems.deduplicate(
+            [*variants, near, swapped, shifted, relabelled], symmetries=True
+        )
+        self.assertEqual([first, near, swapped, shifted, relabelled], unique)
+        for index in range(8):
+            self.assertEqual("0", mapping[str(index)])
+        self.assertEqual(unique, problems.deduplicate(unique, symmetries=True)[0])
+
+    def test_sgf_import_symmetry_deduplication_cli(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "source.sgf"
+            destination = Path(directory) / "book.txt"
+            source_map = Path(directory) / "source-map.csv"
+            source.write_text(
+                "(;AB[aa][ba]AW[ab];W[bb])"
+                "(;AB[aa][ab]AW[ba];W[bb])"
+                "(;AB[aa][ba][bb]AW[ab];W[cc])",
+                encoding="utf-8",
+            )
+            with redirect_stdout(io.StringIO()):
+                result = problems.main([
+                    "import-sgf", "--deduplicate-symmetries",
+                    "--source-map", str(source_map), str(source), str(destination),
+                ])
+            self.assertEqual(0, result)
+            self.assertEqual(2, len(problems.read_ascii(destination)))
+            self.assertEqual(
+                "source_problem,book_problem,kept_source_problem\n"
+                "1,1,1\n2,1,1\n3,2,3\n",
+                source_map.read_text(),
+            )
+
+    def test_sgf_import_deduplication_cli(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            first = Path(directory) / "first.sgf"
+            second = Path(directory) / "second.sgf"
+            destination = Path(directory) / "book.txt"
+            source_map = Path(directory) / "source-map.csv"
+            first.write_text("(;AB[aa]AW[ba];W[ab])", encoding="utf-8")
+            second.write_text(
+                "(;AB[aa]AW[ba];W[ac])(;AB[aa][bb]AW[ba];W[ab])",
+                encoding="utf-8",
+            )
+            with redirect_stdout(io.StringIO()):
+                result = problems.main([
+                    "import-sgf", "--deduplicate", "--source-map", str(source_map),
+                    str(first), str(second), str(destination),
+                ])
+            self.assertEqual(0, result)
+            self.assertEqual(
+                ["1", "2"],
+                [problem.identifier for problem in problems.read_ascii(destination)],
+            )
+            self.assertEqual(
+                "source_problem,book_problem,kept_source_problem\n"
+                "1,1,1\n2,1,1\n3,2,3\n",
+                source_map.read_text(),
+            )
 
     def test_ascii_round_trip(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

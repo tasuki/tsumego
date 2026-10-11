@@ -9,9 +9,10 @@ TeX.
 from __future__ import annotations
 
 import argparse
+import csv
 import re
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from functools import cache
 from pathlib import Path
 from typing import Iterable, Sequence
@@ -121,6 +122,184 @@ def read_legacy_tex(path: Path) -> list[Problem]:
     return problems
 
 
+class _SgfParser:
+    """Small FF[4] parser sufficient for importing problem positions."""
+
+    def __init__(self, text: str, path: Path) -> None:
+        self.text = text
+        self.path = path
+        self.position = 0
+
+    def _error(self, message: str) -> ValueError:
+        line = self.text.count("\n", 0, self.position) + 1
+        return ValueError(f"{self.path}:{line}: {message}")
+
+    def _skip_whitespace(self) -> None:
+        while self.position < len(self.text) and self.text[self.position].isspace():
+            self.position += 1
+
+    def _expect(self, value: str) -> None:
+        self._skip_whitespace()
+        if not self.text.startswith(value, self.position):
+            raise self._error(f"expected {value!r}")
+        self.position += len(value)
+
+    def _value(self) -> str:
+        self._expect("[")
+        value: list[str] = []
+        while self.position < len(self.text):
+            character = self.text[self.position]
+            self.position += 1
+            if character == "]":
+                return "".join(value)
+            if character == "\\":
+                if self.position == len(self.text):
+                    raise self._error("unfinished escape in property value")
+                character = self.text[self.position]
+                self.position += 1
+                if character == "\r":
+                    if self.position < len(self.text) and self.text[self.position] == "\n":
+                        self.position += 1
+                    continue
+                if character == "\n":
+                    continue
+            value.append(character)
+        raise self._error("unterminated property value")
+
+    def _node(self) -> dict[str, list[str]]:
+        self._expect(";")
+        properties: dict[str, list[str]] = {}
+        while True:
+            self._skip_whitespace()
+            start = self.position
+            while (
+                self.position < len(self.text)
+                and "A" <= self.text[self.position] <= "Z"
+            ):
+                self.position += 1
+            if self.position == start:
+                return properties
+            identifier = self.text[start : self.position]
+            self._skip_whitespace()
+            values: list[str] = []
+            while self.position < len(self.text) and self.text[self.position] == "[":
+                values.append(self._value())
+                self._skip_whitespace()
+            if not values:
+                raise self._error(f"property {identifier} has no value")
+            properties.setdefault(identifier, []).extend(values)
+
+    def _game_tree(self) -> tuple[dict[str, list[str]], str | None]:
+        self._expect("(")
+        self._skip_whitespace()
+        nodes: list[dict[str, list[str]]] = []
+        while self.position < len(self.text) and self.text[self.position] == ";":
+            nodes.append(self._node())
+            self._skip_whitespace()
+        if not nodes:
+            raise self._error("game tree has no nodes")
+
+        first_player: str | None = None
+        for node in nodes:
+            players = [player for player in ("B", "W") if player in node]
+            if len(players) > 1:
+                raise self._error("node contains both a Black and White move")
+            if players and first_player is None:
+                first_player = players[0]
+
+        while self.position < len(self.text) and self.text[self.position] == "(":
+            _, variation_player = self._game_tree()
+            if first_player is None:
+                first_player = variation_player
+            self._skip_whitespace()
+        self._expect(")")
+        return nodes[0], first_player
+
+    def collection(self) -> list[tuple[dict[str, list[str]], str | None]]:
+        # The u-go.net collections have a plain-text provenance paragraph before
+        # the first tree. SGF itself starts at the first opening parenthesis.
+        match = re.search(r"\(\s*;", self.text)
+        if match is None:
+            raise self._error("no SGF game trees found")
+        self.position = match.start()
+
+        trees: list[tuple[dict[str, list[str]], str | None]] = []
+        while self.position < len(self.text):
+            self._skip_whitespace()
+            if self.position == len(self.text):
+                break
+            if self.text[self.position] != "(":
+                raise self._error("unexpected text between game trees")
+            trees.append(self._game_tree())
+        return trees
+
+
+def _sgf_setup_points(values: Iterable[str], path: Path) -> set[tuple[int, int]]:
+    points: set[tuple[int, int]] = set()
+
+    def point(value: str) -> tuple[int, int]:
+        if len(value) != 2 or any(not ("a" <= item <= "s") for item in value):
+            raise ValueError(f"{path}: unsupported SGF point {value!r}")
+        return ord(value[0]) - ord("a"), ord(value[1]) - ord("a")
+
+    for value in values:
+        if ":" not in value:
+            points.add(point(value))
+            continue
+        start, end = value.split(":", 1)
+        start_x, start_y = point(start)
+        end_x, end_y = point(end)
+        for x in range(min(start_x, end_x), max(start_x, end_x) + 1):
+            for y in range(min(start_y, end_y), max(start_y, end_y) + 1):
+                points.add((x, y))
+    return points
+
+
+def read_sgf(
+    path: Path,
+    *,
+    start_number: int = 1,
+    default_player: str | None = None,
+) -> list[Problem]:
+    """Read initial positions from an SGF collection, ignoring solution moves."""
+    parser = _SgfParser(path.read_text(encoding="utf-8"), path)
+    problems: list[Problem] = []
+    for number, (root, first_player) in enumerate(parser.collection(), 1):
+        if root.get("GM", ["1"]) != ["1"]:
+            raise ValueError(f"{path}: game {number} is not Go")
+        if root.get("SZ", [str(BOARD_SIZE)]) != [str(BOARD_SIZE)]:
+            raise ValueError(f"{path}: game {number} is not on a 19x19 board")
+
+        identifier = str(start_number + number - 1)
+        black = _sgf_setup_points(root.get("AB", []), path)
+        white = _sgf_setup_points(root.get("AW", []), path)
+        player_values = root.get("PL", [])
+        if len(player_values) > 1 or (
+            player_values and player_values[0] not in ("B", "W")
+        ):
+            raise ValueError(f"{path}: game {number} has invalid PL")
+        player = (
+            player_values[0] if player_values else first_player or default_player
+        )
+        if player is None:
+            raise ValueError(
+                f"{path}: game {number} does not specify which player moves first"
+            )
+        if player == "W":
+            black, white = white, black
+
+        problems.append(
+            normalize(
+                Problem(
+                    identifier=identifier,
+                    black=frozenset(black),
+                    white=frozenset(white),
+                )
+            )
+        )
+    return problems
+
+
 def _transform_point(index: int, x: int, y: int) -> tuple[int, int]:
     """Apply one of the eight square symmetries, preserving identity on ties."""
     last = BOARD_SIZE - 1
@@ -181,6 +360,39 @@ def normalize(problem: Problem) -> Problem:
         width=width,
         height=height,
     )
+
+
+def deduplicate(
+    problems: Sequence[Problem],
+    *,
+    symmetries: bool = False,
+) -> tuple[list[Problem], dict[str, str]]:
+    """Keep the first exact position; map every source ID to its retained ID.
+
+    Compare stones and labels, ignoring identifiers and diagram margins.
+    Optionally allow all eight board symmetries, but never translations,
+    colour reversal, or near-matches. Solution moves are ignored.
+    """
+    unique: list[Problem] = []
+    first_by_position = {}
+    source_to_retained: dict[str, str] = {}
+    for problem in problems:
+        key = min(
+            (
+                tuple(sorted(_transform_point(index, x, y) for x, y in problem.black)),
+                tuple(sorted(_transform_point(index, x, y) for x, y in problem.white)),
+                tuple(sorted(
+                    (*_transform_point(index, x, y), label)
+                    for x, y, label in problem.labels
+                )),
+            )
+            for index in range(8 if symmetries else 1)
+        )
+        if key not in first_by_position:
+            first_by_position[key] = problem.identifier
+            unique.append(problem)
+        source_to_retained[problem.identifier] = first_by_position[key]
+    return unique, source_to_retained
 
 
 def read_ascii(path: Path) -> list[Problem]:
@@ -667,6 +879,30 @@ def _build_parser() -> argparse.ArgumentParser:
     importer.add_argument("source", type=Path)
     importer.add_argument("destination", type=Path)
 
+    sgf_importer = commands.add_parser("import-sgf", help="convert SGF positions to ASCII")
+    sgf_importer.add_argument(
+        "--default-player",
+        choices=("B", "W"),
+        help="player to use when neither PL nor a solution move specifies one",
+    )
+    sgf_importer.add_argument(
+        "--deduplicate",
+        action="store_true",
+        help="keep the first exact normalized position and renumber consecutively",
+    )
+    sgf_importer.add_argument(
+        "--deduplicate-symmetries",
+        action="store_true",
+        help="deduplicate including board rotations/reflections and renumber",
+    )
+    sgf_importer.add_argument(
+        "--source-map",
+        type=Path,
+        help="write a CSV mapping original global source numbers to book numbers",
+    )
+    sgf_importer.add_argument("sources", type=Path, nargs="+")
+    sgf_importer.add_argument("destination", type=Path)
+
     checker = commands.add_parser("check", help="validate an ASCII collection")
     checker.add_argument("source", type=Path)
 
@@ -688,6 +924,48 @@ def main(argv: Sequence[str] | None = None) -> int:
             problems = read_legacy_tex(args.source)
             write_ascii(problems, args.destination)
             print(f"wrote {len(problems)} problems to {args.destination}")
+        elif args.command == "import-sgf":
+            problems = []
+            for source in args.sources:
+                problems.extend(
+                    read_sgf(
+                        source,
+                        start_number=len(problems) + 1,
+                        default_player=args.default_player,
+                    )
+                )
+            source_count = len(problems)
+            if args.deduplicate or args.deduplicate_symmetries:
+                problems, source_to_retained = deduplicate(
+                    problems, symmetries=args.deduplicate_symmetries
+                )
+            else:
+                source_to_retained = {
+                    problem.identifier: problem.identifier for problem in problems
+                }
+            retained_to_book = {
+                problem.identifier: str(number)
+                for number, problem in enumerate(problems, 1)
+            }
+            problems = [
+                replace(problem, identifier=retained_to_book[problem.identifier])
+                for problem in problems
+            ]
+            write_ascii(problems, args.destination)
+            if args.source_map:
+                args.source_map.parent.mkdir(parents=True, exist_ok=True)
+                with args.source_map.open("w", encoding="utf-8", newline="") as output:
+                    writer = csv.writer(output, lineterminator="\n")
+                    writer.writerow(
+                        ["source_problem", "book_problem", "kept_source_problem"]
+                    )
+                    for source_id, retained_id in source_to_retained.items():
+                        writer.writerow(
+                            [source_id, retained_to_book[retained_id], retained_id]
+                        )
+            print(f"wrote {len(problems)} problems to {args.destination}")
+            if args.deduplicate or args.deduplicate_symmetries:
+                print(f"removed {source_count - len(problems)} exact duplicates")
         elif args.command == "check":
             problems = read_ascii(args.source)
             labels = sum(len(problem.labels) for problem in problems)

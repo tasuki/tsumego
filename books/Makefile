@@ -3,8 +3,8 @@
 LUATEX ?= luatex
 TEX = $(LUATEX) -no-shell-escape -interaction=nonstopmode -halt-on-error
 
-default: a5-cho-1-elementary.pdf a5-cho-2-intermediate.pdf a5-cho-3-advanced.pdf a5-gokyoshumyo.pdf a5-xxqj.pdf a5-hatsuyoron.pdf \
-	     a6-cho-1-elementary.pdf a6-cho-2-intermediate.pdf a6-cho-3-advanced.pdf a6-gokyoshumyo.pdf a6-xxqj.pdf a6-hatsuyoron.pdf
+default: a5-cho-1-elementary.pdf a5-cho-2-intermediate.pdf a5-cho-3-advanced.pdf a5-gokyoshumyo.pdf a5-guan-zi-pu.pdf a5-xxqj.pdf a5-hatsuyoron.pdf \
+	     a6-cho-1-elementary.pdf a6-cho-2-intermediate.pdf a6-cho-3-advanced.pdf a6-gokyoshumyo.pdf a6-guan-zi-pu.pdf a6-xxqj.pdf a6-hatsuyoron.pdf
 
 a5-cho-1-elementary.pdf: includes/a5*.tex a5-cho-1-elementary.tex content/cho-1-elementary.tex generated/a5-cho-1.tex
 	$(TEX) a5-cho-1-elementary.tex
@@ -17,6 +17,9 @@ a5-cho-3-advanced.pdf: includes/a5*.tex a5-cho-3-advanced.tex content/cho-3-adva
 
 a5-gokyoshumyo.pdf: includes/a5*.tex a5-gokyoshumyo.tex content/gokyoshumyo.tex generated/a5-gokyoshumyo.tex
 	$(TEX) a5-gokyoshumyo.tex
+
+a5-guan-zi-pu.pdf: includes/a5*.tex a5-guan-zi-pu.tex content/guan-zi-pu.tex generated/a5-guan-zi-pu.tex
+	$(TEX) a5-guan-zi-pu.tex
 
 a5-xxqj.pdf: includes/a5*.tex a5-xxqj.tex content/xxqj.tex generated/a5-xxqj.tex
 	$(TEX) a5-xxqj.tex
@@ -36,6 +39,9 @@ a6-cho-3-advanced.pdf: includes/a6*.tex a6-cho-3-advanced.tex content/cho-3-adva
 
 a6-gokyoshumyo.pdf: includes/a6*.tex a6-gokyoshumyo.tex content/gokyoshumyo.tex generated/a6-gokyoshumyo.tex
 	$(TEX) a6-gokyoshumyo.tex
+
+a6-guan-zi-pu.pdf: includes/a6*.tex a6-guan-zi-pu.tex content/guan-zi-pu.tex generated/a6-guan-zi-pu.tex
+	$(TEX) a6-guan-zi-pu.tex
 
 a6-xxqj.pdf: includes/a6*.tex a6-xxqj.tex content/xxqj.tex generated/a6-xxqj.tex
 	$(TEX) a6-xxqj.tex
@@ -69,6 +75,8 @@ pub: default
 	cp a6-cho-3-advanced.pdf pub/cho-3-advanced-mobile.pdf
 	cp a5-gokyoshumyo.pdf pub/gokyoshumyo.pdf
 	cp a6-gokyoshumyo.pdf pub/gokyoshumyo-mobile.pdf
+	cp a5-guan-zi-pu.pdf pub/guan-zi-pu.pdf
+	cp a6-guan-zi-pu.pdf pub/guan-zi-pu-mobile.pdf
 	cp a5-xxqj.pdf pub/xxqj.pdf
 	cp a6-xxqj.pdf pub/xxqj-mobile.pdf
 	cp a5-hatsuyoron.pdf pub/hatsuyoron.pdf

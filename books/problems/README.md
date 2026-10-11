@@ -39,6 +39,11 @@ From the `books` directory:
 # Validate canonical data
 ../scripts/problems.py check problems/xxqj.txt
 
+# Import positions, remove duplicates under board symmetry, and renumber
+../scripts/problems.py import-sgf --default-player W --deduplicate-symmetries \
+    --source-map sources/guan-zi-pu/source-map.csv \
+    sources/guan-zi-pu/gzp{1,2,3}.sgf problems/guan-zi-pu.txt
+
 # Run the validation and round-trip regression tests
 make test
 
