@@ -1,7 +1,6 @@
 % Keep the existing pdfTeX primitives under LuaTeX; use OpenType text fonts.
 \input luatex85.sty
 \input luaotfload.sty
-\tolerance=10000
 \raggedbottom
 
 \font\label="[fonts/Alegreya-Italic.otf]:mode=node;script=latn;+tlig;+tnum" at 13 pt
@@ -14,6 +13,13 @@
 \font\cjktitle="[fonts/NotoSerifCJKtc-Regular.otf]:mode=node;script=hani;language=zht" at 15mm
 \font\japanesetitle="[fonts/NotoSerifCJKtc-Regular.otf]:mode=node;script=hani;language=jan" at 15mm
 \tenrm
+\frenchspacing
+
+% Keep prose justified, allowing English breaks with two letters on either side.
+\lefthyphenmin=2
+\righthyphenmin=2
+\tolerance=1000
+\emergencystretch=1em
 
 \advance\hoffset -1 true in
 \advance\hoffset 12 true mm
