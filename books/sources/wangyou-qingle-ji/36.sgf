@@ -1,0 +1,19 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[36. Catch Me If You Can]SZ[19]AB[rb][pc][od][pd][rd][re]AW[mb][mc][ob][oc][na][nd][oe][pe][qe][rf][qg]PL[W]C[White to kill Black.
+
+Hint: Note that White has a two-stone ponnuki shape, which allows him to venture deep in the corner.](;W[se];B[pb];W[qd];B[qc];W[sd];B[sc];W[rc];B[rd]C[Good! Now what?];W[qa];B[pa];W[ra];B[sa]LB[re:A]C[Looks like a ko? (Please proceed at A.)];W[re];B[rc];W[sb];B[nb]C[What if Black persists? Can White cancel the ko?](;W[sa];B[qb];W[ra];B[sa];W[sb];B[ma]C[Black throws in yet another ko threat...Something to do inside the corner?](;W[sa];B[oa];W[nc];B[na];W[kb]C[CORRECT
+
+Well done! If Black goes this way, he will surely be dead.])(;W[nc];B[sa]C[WRONG
+
+Still a ko. White can do better...]))(;W[oa];B[sa]C[WRONG
+
+Keep going! Not time to submit to the ko yet.]))(;W[ra];B[qb];W[qd];B[sa]C[Black 4 is a tesuji.](;W[sb];B[sc];W[qc];B[rc];W[qa];B[pa];W[pb];B[sa]LB[qa:A]LB[se:B]C[WRONG
+
+A and B are miai, so Black lives.])(;W[se];B[sc];W[qc];B[rc];W[sb];B[qa]C[WRONG
+
+Black lives unconditionally.])(;W[rc];B[qc];W[sb];B[sc];W[se];B[qa]C[WRONG
+
+Oops, White can't kill from here...]))(;W[qb];B[pb](;W[pa];B[ra];W[qd];B[rc]LB[qc:A]LB[se:B]C[WRONG
+
+Black can sacrifice part of his stones so as A and B are miai.])(;W[qc];B[qd];W[pa];B[ra];W[qa];B[rc]LB[oa:A]LB[se:B]C[WRONG
+
+A and B are miai, so Black still lives.])))

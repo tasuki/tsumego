@@ -1,0 +1,25 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[22. Lost in Concentration]SZ[19]AB[ap][bq][cr][bo][cn][dm][en][gn][ho][gl][gi][eh][cg][ci][bi][aj][bk][fj]AW[bj][cj][dj][ck][cl][dl][el][ek][bp][dp][cp][dq][dr][gq][iq]PL[W]C[White to escape or live his surrounded group!
+
+Hint: What's the tesuji on the first move? (Avoid kos.)](;W[bn](;B[bl];W[bm];B[ak]C[Hmmm, now what?](;W[dn];B[do];W[co]LB[cm:A]LB[em:B]C[CORRECT
+
+Voilà! White has amazingly escaped from Black! Can you read out why Black cannot cut? (If Black A, White B.)])(;W[co];B[cm];W[em];B[dn]C[WRONG
+
+White still can't quite escape there...])(;W[cm];B[co]C[WRONG
+
+Oops...]))(;B[bm];W[bl];B[al]C[CORRECT
+
+A ko. This is optimal for both as White gets to take the ko first.])(;B[an];W[bm];B[co];W[am];B[ak];W[ao]C[CORRECT
+
+A ko. This is optimal for both as White gets to take the ko first.]))(;W[bl];B[ak](;W[bn];B[an]C[WRONG
+
+Uh-oh...])(;W[al];B[ai](;W[bn];B[an]C[WRONG
+
+Black has refuted White's plan.])(;W[an];B[bn]C[WRONG
+
+White hasn't escaped...])))(;W[bm];B[bn]C[WRONG
+
+White dies.])(;W[ak];B[al](;W[bl];B[ak];W[am];B[ai];W[bn];B[co];W[ao];B[an]C[WRONG
+
+A ko, but White can do better...Black takes the ko first.])(;W[am];B[ak];W[bl];B[ai];W[bn];B[co];W[ao];B[an]C[WRONG
+
+A ko, but White can do better...Black takes the ko first.])))

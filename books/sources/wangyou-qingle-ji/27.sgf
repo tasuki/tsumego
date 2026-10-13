@@ -1,0 +1,15 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[27. Into the Subtleness]SZ[19]AB[oq][pq][pp][rq][qo][ro][qm][rm][sm][sn][pl][ol][mk][mm][lo][lq][mr][nr]AW[pm][pn][qn][rn][po][nn][np][nq][op][or][pr][ql][rl][pj][qk]PL[W]C[White to manage an escape!
+
+Hint: The final result might contain a ko...Watch for Black's refuting moves.];W[rr](;B[qr]C[Cometh the hour, cometh the key move...](;W[sq];B[qq]C[Nice! What now?](;W[rp];B[rs];W[so]LB[sl:B]TR[qm]TR[rm]TR[sm]TR[sn]LB[sp:A]C[CORRECT
+
+Perfect! Note that this is not a ko; if Black captures at A, White just needs to atari at B and the Black tail will be captured.])(;W[qs];B[sp]C[WRONG
+
+This might be deceiving to the eye, but Black lives...]))(;W[qs];B[qq];W[sq];B[sp]C[WRONG
+
+This might be deceiving to the eye, but Black lives...])(;W[qq];B[qp];W[qs];B[qq]C[WRONG
+
+Black can simply connect here. White is unfortunately short of liberties.]))(;B[qq]C[Cometh the hour, cometh the key move...](;W[sq];B[sr];W[ss];B[sp];W[qr]C[CORRECT
+
+A ko for White's life!])(;W[qr];B[sr]C[Hmmm, seems tricky...];W[sp];B[so];W[rp];B[sq]C[Now what?];W[sl];B[qp];W[ss];B[os]C[WRONG
+
+Uh oh, not really a ko for White...])))

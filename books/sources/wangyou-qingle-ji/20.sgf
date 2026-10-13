@@ -1,0 +1,17 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[20. Five Beasts in the Cage]SZ[19]AB[co][do][dp][dq][ek][em][en][gn][hm][hp][hq][er][fr]AW[dm][dn][el][eo][ep][eq][fo][gp][bq][cr][dr]PL[W]C[White to save his five beasts!
+
+Hint: The problem becomes simple once White pins Black down tight on the first and second line.](;W[bo];B[cn]LB[bn:A]LB[cn:B]C[If Black played at A, White would have cut at B.];W[cm];B[bn]C[Nice, keep going!](;W[bm];B[bp];W[ao];B[ap](;W[cq];B[an]C[Now finish Black off!](;W[cp];B[am](;W[bk]C[CORRECT
+
+Nice! And you are going to hear the White stones roar :)])(;W[bl]C[CORRECT
+
+Nice! And you are going to hear the White stones roar :)]))(;W[am];B[go](;W[cp]C[CORRECT
+
+Nice! And you are going to hear the White stones roar :)])(;W[aq];B[fq]C[WRONG
+
+Oops, White fails at the last step to success...])))(;W[am];B[an];W[cq]C[CORRECT
+
+Nice! And you are going to hear the White stones roar :)]))(;W[cp];B[bm];W[bl];B[cl];W[dl];B[ck];W[fl];B[fn]C[WRONG
+
+Black will either break out or win the semeai...]))(;W[bn];B[bo];W[cn];B[go]C[WRONG
+
+Black wins by one liberty ahead.]))

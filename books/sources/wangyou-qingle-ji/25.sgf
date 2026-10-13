@@ -1,0 +1,23 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[25. Escape from Alcatraz]SZ[19]AB[bb][bc][cb][ce][cf][df][ch][bi][ci][cj][bk][ak][al][bm][bn][cn][cq][dq][dr][es][fr][fq][fo][gp][hp][fm][gl][fc][gc][hc][ge][gg][fh][fj][gj]AW[aa][ba][ca][da][db][dc][dd][de][ee][ef][eg][dg][dh][di][dj][ck][cl][bl][ej][ek][el][dl][dm][dn][do][dp][ep][fp][eq][er][gq][hr][iq][kq]PL[W]LB[fb:A]C[White to fight for his life!
+
+Hint: Please start at A. White will have to work a long way, using Black's shortage of liberties in his shape.];W[fb];B[fa]C[Black 2 is a tesuji, White cannot make an eye here. Now, find something from the gap between Black's connections!];W[bp];B[bs]C[Be careful...](;W[br];B[bq];W[aq];B[cp];W[co];B[bo]C[Remember, avoid kos here...](;W[ap];B[ao];W[ar];B[cs]LB[gr:A]C[Good! Please proceed at A to avoid unnecessary branches.];W[gr];B[fs]LB[gs:A]C[And now, please follow at A.];W[gs];B[ds];W[am];B[an];W[cm];B[am]C[Good! Now what?];W[cg];B[bg]C[Here comes the key move!](;W[ag];B[bh]C[Now, another tesuji on the first line!](;W[ai];B[bj]C[Now, how to attack the corner?];W[bd];B[cd];W[ac];B[be](;W[ad];B[ae];W[ab]LB[af:A]C[CORRECT
+
+Yay! White has unconditionally lived...Next, Black has to play at A to live, so White lives in sente!])(;W[ae];B[af];W[bf];B[ad]C[WRONG
+
+Black kills White by double ko.]))(;W[cd];B[bd]C[WRONG
+
+Uh oh, Black still lives...])(;W[bd];B[cd];W[ac];B[be](;W[ad];B[cc]C[WRONG
+
+Black is still alive...])(;W[ae];B[af];W[bf];B[ad]C[WRONG
+
+Black kills White by double ko.])))(;W[bd];B[cd](;W[cc];B[be];W[ac];B[ad];W[ab];B[bd];W[af];B[bf]C[WRONG
+
+Amazingly, there's nothing White can do...])(;W[ac];B[be];W[ad];B[ae];W[ab];B[cc]C[WRONG
+
+Black lives, despite having bad shape...])))(;W[gr];B[fs](;W[ds];B[cs];W[gs];B[ds];W[ap];B[ao];W[ar];B[am]C[WRONG
+
+Too bad, Black has gotten sente out of the seki...])(;W[ap];B[ao];W[ar];B[cs])))(;W[bq];B[br]LB[cp:A]LB[ar:B]C[WRONG
+
+A and B are miai, so Black either lives or cuts White.])(;W[cp];B[ar]C[WRONG
+
+Black lives in the corner.]))

@@ -1,0 +1,15 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[35. Eternal Life II]SZ[19]AB[bp][bq][cq][ao][dp][ep][eq][er][fs]AW[bo][bm][co][cp][do][eo][cr][fp][fq][fr][hr]PL[W]C[White's turn to do his best in Black's corner!](;W[ds];B[es]C[Now what?];W[gs];B[dq](;W[br];B[ar](;W[bs];B[dr];W[ap];B[cs]C[CORRECT
+
+Well done! White has forced Black into a ko-for-life!])(;W[ap];B[bs]C[WRONG
+
+Seki...]))(;W[ap];B[bs]C[Black 6 is a tesuji.];W[br];B[ar]C[WRONG
+
+At least, it's a seki now. White can do better...])(;W[ar];B[br];W[bs];B[dr]C[WRONG
+
+Uh-oh, this doesn't work for White...]))(;W[dr];B[dq](;W[br];B[ar]C[One step closer to chosei...](;W[bs];B[ds];W[ap];B[as]C[Here comes the throw-in...];W[aq];B[ar];W[ap]C[CORRECT
+
+Nice! The chosei goes into an infinite loop! Very interesting.])(;W[es];B[bs]C[WRONG
+
+Black 6 is the vital point, and he lives.]))(;W[ap];B[br]C[WRONG
+
+Black lives...])))

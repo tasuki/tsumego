@@ -1,0 +1,11 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[4. A Thousand Miles to Life]SZ[19]AB[ci][cj][ck][ei][ek][bh][bg][bl][bm]AW[ai][bi][bj][bk][ak][ch][dh][eh][cl][dl][el]PL[W]C[White to struggle to his life!
+
+Hint: Start from the two Black stones on top. White has only 3 liberties...How can he make another one in sente?](;W[bf];B[cf]LB[cf:B]LB[cg:A]C[Black cannot afford to play at A, otherwise White would follow at B.];W[cg];B[be]TR[bl]TR[bm]C[Time to work on these two triangled stones.];W[cn];B[bn];W[bo];B[bp]C[What now?](;W[co];B[ao];W[an];B[am];W[cm];B[ap];W[cq]C[CORRECT
+
+Huzzah! White has captured Black!])(;W[ao];B[co];W[cp];B[do];W[bq];B[cm];W[dn];B[dm];W[en];B[em]C[WRONG
+
+Alas, the Black stones are spilling out...]))(;W[cf];B[al]C[WRONG
+
+Oops, White doesn't have enough liberties...])(;W[ej];B[fj];W[dj];B[di];W[fi];B[dk];W[fk];B[gk];W[fl];B[gi];W[fh];B[ej]C[WRONG
+
+Doesn't really work...]))

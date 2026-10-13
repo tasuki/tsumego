@@ -1,0 +1,25 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[17. Every Inch A Dilemma]SZ[19]AB[qi][qj][qk][rh][rl][sl]AW[qf][qg][qh][qd][oi][pi][pk][pl][ql][rm][qn]PL[W]C[White to unconditionally kill Black. A ko will be counted as failure.
+
+Hint: What is the vital point of Black's shape?](;W[sj];B[si];W[rj];B[rg]C[Tip: Remember, kill unconditionally!](;W[sg];B[rf](;W[re];B[sf]C[Good! Now what?];W[ri];B[rk];W[sh];B[si];W[sh]C[CORRECT
+
+Now, White has killed Black unconditionally! Can you read out the shape?])(;W[ri];B[rk];W[sh];B[sk]C[WRONG
+
+Too early...]))(;W[ri];B[sg]C[WRONG
+
+Watch out for the ko...])(;W[rf];B[sg];W[ri];B[rk]C[WRONG
+
+White can do better than a ko!]))(;W[rg];B[sh](;W[sj];B[rj](;W[sg];B[sk]C[WRONG
+
+Black lives.])(;W[sm];B[si]C[WRONG
+
+Black lives.]))(;W[rj];B[sj](;W[rk];B[ri]C[WRONG
+
+Black lives.])(;W[ri];B[rk]C[WRONG
+
+Black lives.])))(;W[sm];B[rj]C[WRONG
+
+Black unconditionally lives.])(;W[sh];B[rg](;W[sj];B[si];W[ri];B[rj]C[WRONG
+
+Black can manage a ko for life.])(;W[sm];B[sj]C[WRONG
+
+Unconditional life for Black.])))

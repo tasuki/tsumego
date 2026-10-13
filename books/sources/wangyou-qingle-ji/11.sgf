@@ -1,0 +1,17 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[11. Tales of The Broken Ax]SZ[19]AB[ba][db][eb][fc][fd][dd][cd][bd][ef][eg][fh][cl][bk][ee]AW[bc][cc][dc][ec][ed][de][fe][ff][fg][fi][ek][fl][bj]PL[W]C[Help White get out...Before the lumberjack's ax breaks down!
+
+Hint: White has only three liberties, so his moves have to be very tight and efficient!](;W[be];B[ce];W[cf];B[ad]LB[ad:B]LB[df:A]C[Black 4 extends. If Black captures at A instead, White would counter at B.](;W[df];B[bf]C[Now what?];W[eh];B[dg];W[cg];B[dh](;W[ci];B[ei];W[di];B[gh]C[Now, one final blow...];W[ch];B[eh];W[af]C[CORRECT
+
+Correct! Black is dead!])(;W[bg];B[bb];W[di];B[ch];W[bh];B[ci];W[cj];B[ei]C[WRONG
+
+White cannot contain Black...])(;W[af];B[ae](;W[bg];B[ag];W[di];B[ch];W[bh];B[ci];W[cj];B[ei]C[WRONG
+
+Uh oh...])(;W[ag];B[bg];W[ch];B[di];W[ci];B[dj];W[ah];B[bh];W[ai];B[cj]C[WRONG
+
+White cannot hold the position...])(;W[bh];B[bg];W[ch];B[di]C[WRONG
+
+Ouch...])))(;W[ac];B[df];W[ae];B[de];W[eh];B[dg];W[dh];B[cg]C[WRONG
+
+Although Black's position looks dangerous, there is nothing White can do...])(;W[ae];B[df];W[ac];B[de]))(;W[cf];B[bb]C[WRONG
+
+White has only two liberties now...]))

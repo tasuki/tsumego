@@ -1,0 +1,13 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[30. Eyes of A Falcon]SZ[19]AB[ra][rb][qc][qd][re][qf][pe][rg][sg][pg][oe][nf][og]AW[nd][ne][od][pd][pc][ob][qb][qa][mf][mg][mh][mi][nh][oh][ph][qh][qg][rh][sh][rc]PL[W]C[It's time to hunt the rabbit...White to kill unconditionally.
+
+Hint: The second move from White is the key!](;W[rd];B[qe]C[Here comes the move...](;W[sc];B[sf]LB[se:A]LB[of:B]C[If Black descends at A, White will just throw in at B and use the snapback to kill Black unconditionally.](;W[of];B[pf];W[ng];B[sd];W[se]C[CORRECT
+
+The ko is the final solution!])(;W[sb];B[of];W[se];B[sd]C[CORRECT
+
+The ko is the final solution!]))(;W[sb];B[sd]LB[sa:A]LB[of:B]C[WRONG
+
+A and B are miai now...])(;W[se];B[sc]C[WRONG
+
+Black still lives with two eyes.]))(;W[sb];B[rd]C[WRONG
+
+Black lives with two eyes...]))

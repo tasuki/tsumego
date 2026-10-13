@@ -1,0 +1,13 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[31. Death of the Six Pelicans]SZ[19]AB[cp][ep][eq][do][br][ds]AW[cn][dn][en][bo][bp][fo][fp][fq][fr][fm]PL[W]C[White to kill the corner. 'Nuff said.
+
+Hint: First move is obvious...What about the second?];W[bq];B[cq]C[Okay, what now?](;W[bs](;B[ar]C[What if Black insists on the descent?](;W[dr];B[er];W[cs];B[es];W[cr];B[dq];W[aq];B[as];W[cr]C[CORRECT
+
+Brilliant! A nice and easy snapback to know.])(;W[cr];B[dr]C[WRONG
+
+Oops...]))(;B[cs]C[What if Black plays here?];W[ar];B[as]C[CORRECT
+
+Very neat. Ko for the kill!]))(;W[ar];B[bs](;W[er];B[dr]C[WRONG
+
+Black lives...])(;W[dr];B[er]LB[dq:B]LB[cr:A]C[WRONG
+
+The miai at A and B is good enough for Black.])))

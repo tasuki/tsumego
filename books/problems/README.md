@@ -9,6 +9,7 @@ Each problem starts with `problem ID` and is followed by a rectangular diagram:
 
 ```text
 problem 12
+title An optional problem title
 ..x...
 .xoo..
 ......
@@ -19,7 +20,12 @@ The symbols are:
 - `.` — empty intersection
 - `x` — black stone
 - `o` — white stone
+- `b` — black stone marked with a triangle
+- `w` — white stone marked with a triangle
 - `A` through `Z` — a labelled empty intersection
+
+An optional `title TEXT` line before the grid supplies the caption title.
+Titles are printed immediately below their diagrams alongside the problem number.
 
 Blank lines and lines starting with `#` are ignored. Omitted intersections to
 the right and below are empty; the underlying board is always 19 by 19. The
@@ -30,6 +36,10 @@ All positions are normalized to **Black to play**. Positions are transformed by
 one of the eight symmetries of the square to minimize their height and then
 their width, placing local problems toward the top-left. This is the same rule
 used by the historical `scripts/rotate.pl`.
+
+Triangle marks remain attached to their stones when colours are reversed or
+diagrams transformed. SGF import preserves root `LB` and `TR` properties;
+solution moves and marks in later nodes are ignored.
 
 ## Tooling
 
@@ -47,6 +57,10 @@ From the `books` directory:
 # Import Shikatsu Myoki's 120 main problems (excluding variations marked v)
 python3 ../scripts/import_shikatsu_myoki.py \
     sources/shikatsu-myoki problems/shikatsu-myoki.txt
+
+# Import all 37 supplied Wangyou Qingle Ji starting positions, in order
+python3 ../scripts/import_wangyou_qingle_ji.py \
+    sources/wangyou-qingle-ji problems/wangyou-qingle-ji.txt
 
 # Run the validation and round-trip regression tests
 make test

@@ -14,6 +14,7 @@ from pathlib import Path
 
 import problems
 import import_shikatsu_myoki
+import import_wangyou_qingle_ji
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -30,6 +31,7 @@ class ProblemDataTests(unittest.TestCase):
             "guan-zi-pu.txt": (1107, 0),
             "hatsuyoron.txt": (183, 0),
             "shikatsu-myoki.txt": (120, 0),
+            "wangyou-qingle-ji.txt": (37, 0),
             "xxqj.txt": (347, 0),
         }
         for filename, (problem_count, label_count) in expected.items():
@@ -88,6 +90,119 @@ class ProblemDataTests(unittest.TestCase):
             ],
             rows,
         )
+
+    def test_wangyou_qingle_ji_import(self) -> None:
+        source = BOOKS / "sources" / "wangyou-qingle-ji"
+        paths = sorted(source.glob("*.sgf"))
+        self.assertEqual([f"{number:02}.sgf" for number in range(1, 38)],
+                         [path.name for path in paths])
+        imported = import_wangyou_qingle_ji.read_collection(source)
+        for number, path in enumerate(paths, 1):
+            root, _ = problems._SgfParser(path.read_text(), path).collection()[0]
+            self.assertTrue(root["GN"][0].startswith(f"{number}. "))
+            position = imported[number - 1]
+            title = root["GN"][0].removeprefix(f"{number}. ")
+            self.assertEqual(title.removesuffix(" (revised)"), position.title)
+            original, = problems.read_sgf(path, start_number=number)
+            self.assertEqual(original.black, position.black)
+            self.assertEqual(original.white, position.white)
+            if number == 3:
+                self.assertFalse(position.triangles)
+            elif number == 7:
+                self.assertEqual(
+                    frozenset({(14, 15), (15, 15), (16, 15), (17, 15), (14, 17)}),
+                    position.triangles,
+                )
+                self.assertTrue(position.triangles <= position.white)
+            else:
+                self.assertEqual(original.triangles, position.triangles)
+            self.assertEqual(original.labels if number not in (13, 25, 33) else (), position.labels)
+            black_key, white_key = ("AB", "AW") if root["PL"] == ["B"] else ("AW", "AB")
+            self.assertEqual(len(root[black_key]), len(position.black))
+            self.assertEqual(len(root[white_key]), len(position.white))
+        self.assertEqual(
+            problems.read_ascii(BOOKS / "problems" / "wangyou-qingle-ji.txt"), imported
+        )
+        self.assertEqual(23, sum(len(problem.triangles) for problem in imported))
+        self.assertEqual(
+            {"7": 5, "9": 1, "13": 1, "23": 8, "26": 8},
+            {problem.identifier: len(problem.triangles)
+             for problem in imported if problem.triangles},
+        )
+        self.assertEqual([],
+                         [problem.identifier for problem in imported if problem.labels])
+        for profile in ("a5", "a6"):
+            with tempfile.TemporaryDirectory() as directory:
+                tex_path = Path(directory) / "problems.tex"
+                sgf_path = Path(directory) / "problems.sgf"
+                problems.render_tex(imported, tex_path, profile)
+                tex = tex_path.read_text()
+                self.assertEqual(0, tex.count(r"\!  A"))
+                for problem in imported:
+                    self.assertIn(f"{problem.identifier}. {problem.title}", tex)
+                self.assertNotIn("revised", tex)
+                content = (BOOKS / "content" / "wangyou-qingle-ji.tex").read_text()
+                self.assertNotIn("Problem notes", content)
+                self.assertEqual(1, tex.count(r"\- :"))
+                self.assertEqual(22, tex.count(r"\- ;"))
+                problems.write_sgf(imported, sgf_path)
+                self.assertEqual(imported, problems.read_sgf(sgf_path, include_titles=True))
+
+    def test_titles_round_trip_and_escape_tex(self) -> None:
+        position = problems.Problem(
+            identifier="1", black=frozenset({(0, 0)}), white=frozenset({(1, 0)}),
+            title="A & B: 50% #1 {test}", width=3, height=2,
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            ascii_path = Path(directory) / "problems.txt"
+            sgf_path = Path(directory) / "problems.sgf"
+            tex_path = Path(directory) / "problems.tex"
+            problems.write_ascii([position], ascii_path)
+            self.assertEqual([position], problems.read_ascii(ascii_path))
+            problems.write_sgf([position], sgf_path)
+            self.assertEqual([position], problems.read_sgf(sgf_path, include_titles=True))
+            self.assertEqual("", problems.read_sgf(sgf_path)[0].title)
+            problems.render_tex([position], tex_path, "a5")
+            self.assertIn(r"A {\char38} B: 50{\char37} {\char35}1 {\char123}test{\char125}",
+                          tex_path.read_text())
+            ascii_path.write_text("problem 1\nx.\n..\ntitle Too late\n")
+            with self.assertRaisesRegex(ValueError, "title must occur once before"):
+                problems.read_ascii(ascii_path)
+
+    def test_sgf_import_preserves_only_root_marks(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "marked.sgf"
+            source.write_text(
+                "(;SZ[19]PL[W]AB[ss]AW[rs]LB[qr:A]TR[ss][rs]"
+                ";W[qs]LB[ps:B]TR[qs])"
+            )
+            expected = problems.normalize(problems.Problem(
+                identifier="1", black=frozenset({(17, 18)}),
+                white=frozenset({(18, 18)}), labels=((16, 17, "A"),),
+                triangles=frozenset({(17, 18), (18, 18)}),
+            ))
+            self.assertEqual([expected], problems.read_sgf(source))
+
+    def test_triangles_are_validated_and_part_of_deduplication(self) -> None:
+        first = problems.Problem(
+            identifier="first", black=frozenset({(0, 0), (1, 0)}),
+            white=frozenset({(0, 1)}), triangles=frozenset({(0, 0)}),
+        )
+        variants = [
+            replace(
+                first, identifier=str(index),
+                black=frozenset(problems._transform_point(index, x, y) for x, y in first.black),
+                white=frozenset(problems._transform_point(index, x, y) for x, y in first.white),
+                triangles=frozenset(problems._transform_point(index, x, y) for x, y in first.triangles),
+            )
+            for index in range(8)
+        ]
+        different = replace(first, identifier="different", triangles=frozenset({(1, 0)}))
+        unmarked = replace(first, identifier="unmarked", triangles=frozenset())
+        unique, _ = problems.deduplicate([*variants, different, unmarked], symmetries=True)
+        self.assertEqual([variants[0], different, unmarked], unique)
+        with self.assertRaisesRegex(ValueError, "triangle is not on a stone"):
+            replace(first, triangles=frozenset({(2, 2)}))
 
     def test_shikatsu_myoki_import(self) -> None:
         source = BOOKS / "sources" / "shikatsu-myoki"

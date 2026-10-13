@@ -1,0 +1,23 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[34. Eternal Life I]SZ[19]AB[ob][pb][nc][md][od][pe][oe][qf][pg][rg][mb]AW[qb][oc][pc][pd][qe][re][rf][nb]PL[B]C[Black to do his best in White's corner!
+
+Hint: The result will be a chosei (eternal life loop.) Ko is not the best...](;B[rb];W[pa](;B[rc];W[qc](;B[na];W[sg]C[White hanes...Black needs to respond directly in order to avoid White's partial escape. (Note: There is also a newly-discovered way to kill from here!)](;B[rh];W[ra]C[Now what?];B[rd];W[qd]C[Now what?](;B[sb];W[sd](;B[sf];W[sc]C[Here comes the chosei...];B[se];W[sd];B[sf]C[CORRECT
+
+Congratulations! You have achieved eternal life!])(;B[sc];W[sa]LB[rc:A]LB[sf:B]C[WRONG
+
+A and B are miai.]))(;B[sf];W[sb]C[WRONG
+
+White lives.]))(;B[sf];W[se]C[Nice! What now?];B[rh];W[sc];B[ra];W[qa](;B[oa];W[qd];B[sb];W[rd]C[WRONG
+
+This also leads to a ko.])(;B[rd];W[qd];B[sd];W[sb]C[WRONG
+
+Unconditional life.])))(;B[rd];W[qd];B[sf];W[se];B[na];W[sg];B[rh];W[sb];B[sc];W[ra]C[WRONG
+
+A ko, still not the best...]))(;B[na];W[rc];B[ra];W[qa]C[WRONG
+
+Oops...]))(;B[rc];W[rb];B[qc];W[qd];B[sb];W[rd]C[WRONG
+
+White lives unconditionally.])(;B[qc];W[qd](;B[rc];W[rb];B[sb];W[rd]C[WRONG
+
+White lives unconditionally.])(;B[rb];W[rc];B[qa]C[WRONG
+
+A ko, but not the best here...])))

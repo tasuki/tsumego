@@ -1,0 +1,17 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[18. The Emperor is Under Siege]SZ[19]AB[ap][bp][br][cq][dq][aa][bb][bc][ca][db][eb][cd][ce][de][df][cg][eg][ci][cj][bk][cm][cn][ep][fp][fn][gl][gk][fj][gi][gh][hf][he][id][hc][hb]AW[cb][cc][dc][dd][ed][fb][fc][gc][hd][ee][ge][ff][fg][fh][fi][di][dj][cl][dk][ek][fk][el][em][dm][dn][do][dp]PL[W]C[White to find out a path of life!
+
+Hint: Try creating aji in Black's territory by tightening his liberties in sente. White has two half-eyes; fixing which first will provoke more aji?](;W[ck];B[gd];W[ef];B[fd]C[Now, White can eliminate Black's liberties on top left...];W[da];B[ea];W[fa];B[ba];W[ec];B[da]C[Now, time for liberty reduction at the middle joint!];W[dh];B[dg];W[eh];B[ej];W[ch];B[bh]C[Now, some work on the bottom left!](;W[bj];B[bi];W[bl];B[aj]C[Wizardry on the first line?](;W[am];B[bn];W[ak];B[bj]C[Good job! Now what? Note that Black's corner is tight in liberties.](;W[bd];B[be](;W[bg];B[ag]C[A final blow!];W[bf];B[af];W[ad];B[ae];W[ah];B[cf];W[bg]C[CORRECT
+
+Voilà! The Emperor is out of trouble again!])(;W[ad];B[ae];W[bg];B[ag];W[bf];B[ah]C[WRONG
+
+Black 32 is vital, Black lives.]))(;W[bg];B[bf];W[bd];B[ad]C[WRONG
+
+Nothing happens...]))(;W[al];B[bn];W[ak];B[bf]C[WRONG
+
+White is still dead.])(;W[bn];B[co];W[bm];B[bo];W[al];B[an];W[ak];B[bf]C[WRONG
+
+White cannot find the second eye.])(;W[co];B[bn];W[bo];B[ao];W[am];B[an]C[Good! Yet usually we want the simplest solution with the fewest moves. Is there a way to reduce the sequence to only A7?]))(;W[bl];B[bj];W[al];B[bn];W[aj];B[bg]C[WRONG
+
+Black is still solid as a rock...]))(;W[gd];B[ck]C[WRONG
+
+Black is still solid as steel...]))

@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Iterable, Sequence
 
 BOARD_SIZE = 19
-GRID_CHARACTERS = frozenset(".xoABCDEFGHIJKLMNOPQRSTUVWXYZ")
+GRID_CHARACTERS = frozenset(".xobwABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 
 @dataclass(frozen=True)
@@ -29,14 +29,20 @@ class Problem:
     labels: tuple[tuple[int, int, str], ...] = ()
     width: int = BOARD_SIZE
     height: int = BOARD_SIZE
+    triangles: frozenset[tuple[int, int]] = frozenset()
+    title: str = ""
 
     def __post_init__(self) -> None:
+        if "\n" in self.title or "\r" in self.title:
+            raise ValueError(f"problem {self.identifier}: title must be a single line")
         points = set(self.black) | set(self.white)
         label_points = {(x, y) for x, y, _ in self.labels}
         if self.black & self.white:
             raise ValueError(f"problem {self.identifier}: black and white overlap")
         if points & label_points:
             raise ValueError(f"problem {self.identifier}: a label overlaps a stone")
+        if not self.triangles <= points:
+            raise ValueError(f"problem {self.identifier}: a triangle is not on a stone")
         if not points and not label_points:
             raise ValueError(f"problem {self.identifier}: empty diagram")
         for x, y in points | label_points:
@@ -264,6 +270,7 @@ def read_sgf(
     *,
     start_number: int = 1,
     default_player: str | None = None,
+    include_titles: bool = False,
 ) -> list[Problem]:
     """Read initial positions from an SGF collection, ignoring solution moves."""
     parser = _SgfParser(path.read_text(encoding="utf-8"), path)
@@ -277,6 +284,14 @@ def read_sgf(
         identifier = str(start_number + number - 1)
         black = _sgf_setup_points(root.get("AB", []), path)
         white = _sgf_setup_points(root.get("AW", []), path)
+        labels: list[tuple[int, int, str]] = []
+        for value in root.get("LB", []):
+            coordinate, separator, label = value.partition(":")
+            if not separator:
+                raise ValueError(f"{path}: game {number} has invalid LB {value!r}")
+            point, = _sgf_setup_points([coordinate], path)
+            labels.append((*point, label))
+        triangles = frozenset(_sgf_setup_points(root.get("TR", []), path))
         player_values = root.get("PL", [])
         if len(player_values) > 1 or (
             player_values and player_values[0] not in ("B", "W")
@@ -298,6 +313,10 @@ def read_sgf(
                     identifier=identifier,
                     black=frozenset(black),
                     white=frozenset(white),
+                    labels=tuple(labels),
+                    triangles=triangles,
+                    title=root.get("GN", [""])[0].removeprefix(f"{identifier}. ")
+                    if include_titles else "",
                 )
             )
         )
@@ -363,6 +382,8 @@ def normalize(problem: Problem) -> Problem:
         labels=labels,
         width=width,
         height=height,
+        triangles=points(problem.triangles),
+        title=problem.title,
     )
 
 
@@ -373,7 +394,7 @@ def deduplicate(
 ) -> tuple[list[Problem], dict[str, str]]:
     """Keep the first exact position; map every source ID to its retained ID.
 
-    Compare stones and labels, ignoring identifiers and diagram margins.
+    Compare stones, labels, and triangles, ignoring identifiers and margins.
     Optionally allow all eight board symmetries, but never translations,
     colour reversal, or near-matches. Solution moves are ignored.
     """
@@ -389,6 +410,7 @@ def deduplicate(
                     (*_transform_point(index, x, y), label)
                     for x, y, label in problem.labels
                 )),
+                tuple(sorted(_transform_point(index, x, y) for x, y in problem.triangles)),
             )
             for index in range(8 if symmetries else 1)
         )
@@ -402,10 +424,11 @@ def deduplicate(
 def read_ascii(path: Path) -> list[Problem]:
     problems: list[Problem] = []
     identifier: str | None = None
+    title = ""
     rows: list[str] = []
 
     def finish() -> None:
-        nonlocal identifier, rows
+        nonlocal identifier, title, rows
         if identifier is None:
             return
         if not rows:
@@ -419,6 +442,7 @@ def read_ascii(path: Path) -> list[Problem]:
         black: set[tuple[int, int]] = set()
         white: set[tuple[int, int]] = set()
         labels: list[tuple[int, int, str]] = []
+        triangles: set[tuple[int, int]] = set()
         for y, row in enumerate(rows):
             invalid = set(row) - GRID_CHARACTERS
             if invalid:
@@ -426,12 +450,14 @@ def read_ascii(path: Path) -> list[Problem]:
                     f"{path}: problem {identifier} contains {sorted(invalid)!r}"
                 )
             for x, value in enumerate(row):
-                if value == "x":
+                if value in "xb":
                     black.add((x, y))
-                elif value == "o":
+                elif value in "ow":
                     white.add((x, y))
                 elif value != ".":
                     labels.append((x, y, value))
+                if value in "bw":
+                    triangles.add((x, y))
 
         problems.append(
             Problem(
@@ -441,9 +467,12 @@ def read_ascii(path: Path) -> list[Problem]:
                 labels=tuple(labels),
                 width=width,
                 height=len(rows),
+                triangles=frozenset(triangles),
+                title=title,
             )
         )
         identifier = None
+        title = ""
         rows = []
 
     for line_number, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
@@ -457,6 +486,12 @@ def read_ascii(path: Path) -> list[Problem]:
                 raise ValueError(f"{path}:{line_number}: missing problem identifier")
         elif identifier is None:
             raise ValueError(f"{path}:{line_number}: expected 'problem ID'")
+        elif line == "title" or line.startswith("title "):
+            if rows or title:
+                raise ValueError(f"{path}:{line_number}: title must occur once before the diagram")
+            title = line.removeprefix("title").strip()
+            if not title:
+                raise ValueError(f"{path}:{line_number}: missing problem title")
         else:
             rows.append(line)
     finish()
@@ -473,20 +508,22 @@ def write_ascii(problems: Sequence[Problem], path: Path) -> None:
     chunks = [
         "# tsumego-ascii 1",
         "# All positions are normalized to the top-left with Black to play.",
-        "# . empty, x black, o white, A-Z labelled empty point",
+        "# . empty, x black, o white, b/w triangled black/white, A-Z labelled empty point",
         "",
     ]
     for problem in problems:
         labels = {(x, y): label for x, y, label in problem.labels}
         chunks.append(f"problem {problem.identifier}")
+        if problem.title:
+            chunks.append(f"title {problem.title}")
         for y in range(problem.height):
             row: list[str] = []
             for x in range(problem.width):
                 point = (x, y)
                 if point in problem.black:
-                    row.append("x")
+                    row.append("b" if point in problem.triangles else "x")
                 elif point in problem.white:
-                    row.append("o")
+                    row.append("w" if point in problem.triangles else "o")
                 elif point in labels:
                     row.append(labels[point])
                 else:
@@ -761,6 +798,13 @@ def plan_layout(
     return columns
 
 
+def _tex_escape(value: str) -> str:
+    return "".join(
+        rf"{{\char{ord(character)}}}" if character in "\\{}#%&$_~^" else character
+        for character in value
+    )
+
+
 def render_tex(
     problems: Sequence[Problem], path: Path, profile: str
 ) -> None:
@@ -795,6 +839,10 @@ def render_tex(
         r"\setbox0\hbox{\gooegb +}\global\goIntHt=\ht0",
         "",
     ]
+    if any(problem.title for problem in problems):
+        title_size = 10 if profile == "a5" else 13
+        chunks.insert(1, r'\font\problemtitle="[fonts/Alegreya-Italic.otf]:mode=node;script=latn;+tlig;+tnum"'
+                      + f" at {title_size}pt")
     for column_index, column in enumerate(columns):
         if leading_rows[column_index]:
             chunks.extend(
@@ -815,19 +863,25 @@ def render_tex(
                     point = (x, y)
                     background = _background(x, y)
                     if point in problem.black:
-                        cells.append(r"\- @" + background)
+                        glyph = ":" if point in problem.triangles else "@"
+                        cells.append(r"\- " + glyph + background)
                     elif point in problem.white:
-                        cells.append(r"\- !" + background)
+                        glyph = ";" if point in problem.triangles else "!"
+                        cells.append(r"\- " + glyph + background)
                     elif point in label_at:
                         cells.append(r"\!  " + label_at[point])
                     else:
                         cells.append(r"\0??" + background)
                 chunks.append("".join(cells))
+            caption = (
+                r"\problemtitle " + _tex_escape(f"{problem.identifier}. {problem.title}")
+                if problem.title else f"problem {problem.identifier}"
+            )
             chunks.extend(
                 [
                     "}",
                     r"\vbox to 2\goIntHt{\vfil"
-                    + rf"\hbox to \hsize{{\hfil problem {problem.identifier}\hfil}}"
+                    + rf"\hbox to \hsize{{\hfil {caption}\hfil}}"
                     + r"\vfil}",
                     "}",
                     "",
@@ -855,7 +909,7 @@ def write_sgf(problems: Sequence[Problem], path: Path) -> None:
     for problem in problems:
         properties = [
             "GM[1]FF[4]CA[UTF-8]SZ[19]",
-            f"GN[{_sgf_escape(problem.identifier)}]PL[B]",
+            f"GN[{_sgf_escape(f'{problem.identifier}. {problem.title}' if problem.title else problem.identifier)}]PL[B]",
         ]
         if problem.black:
             properties.append("AB" + "".join(f"[{_sgf_point(x, y)}]" for x, y in sorted(problem.black)))
@@ -868,6 +922,10 @@ def write_sgf(problems: Sequence[Problem], path: Path) -> None:
                     f"[{_sgf_point(x, y)}:{_sgf_escape(label)}]"
                     for x, y, label in sorted(problem.labels)
                 )
+            )
+        if problem.triangles:
+            properties.append(
+                "TR" + "".join(f"[{_sgf_point(x, y)}]" for x, y in sorted(problem.triangles))
             )
         properties.append(f"VW[aa:{_sgf_point(problem.width - 1, problem.height - 1)}]")
         trees.append("(;" + "\n".join(properties) + ")")
@@ -884,6 +942,9 @@ def _build_parser() -> argparse.ArgumentParser:
     importer.add_argument("destination", type=Path)
 
     sgf_importer = commands.add_parser("import-sgf", help="convert SGF positions to ASCII")
+    sgf_importer.add_argument(
+        "--titles", action="store_true", help="include root GN names as problem titles",
+    )
     sgf_importer.add_argument(
         "--default-player",
         choices=("B", "W"),
@@ -936,6 +997,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                         source,
                         start_number=len(problems) + 1,
                         default_player=args.default_player,
+                        include_titles=args.titles,
                     )
                 )
             source_count = len(problems)
@@ -973,7 +1035,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         elif args.command == "check":
             problems = read_ascii(args.source)
             labels = sum(len(problem.labels) for problem in problems)
-            print(f"{args.source}: {len(problems)} problems, {labels} labels")
+            triangles = sum(len(problem.triangles) for problem in problems)
+            marks = f", {triangles} triangled stones" if triangles else ""
+            print(f"{args.source}: {len(problems)} problems, {labels} labels{marks}")
         elif args.command == "render-tex":
             render_tex(read_ascii(args.source), args.destination, args.profile)
         elif args.command == "export-sgf":

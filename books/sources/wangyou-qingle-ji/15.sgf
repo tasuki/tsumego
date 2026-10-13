@@ -1,0 +1,21 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[15. The Four Wizards Return]SZ[19]AB[ob][oc][od][pf][pg][oh][nh][ni][oj][pj][qj][rj][sj][sk]AW[nj][nk][ok][pk][qk][rk][rl][sl][oi][pi][ph][qh][pb][pc][rb][rc]PL[B]C[Black to live his endangered group in the best way.
+
+Hint: Black might not be able to capture White's four wizards; nevertheless, he is able to take advantage!](;B[rh];W[qg](;B[rg];W[qf];B[qe];W[rf];B[re];W[sf]C[Now what?](;B[si];W[se];B[sd];W[rd](;B[sg];W[sc];B[qi];W[sd]C[CORRECT
+
+Yes! Black has lived in sente and sent the four White wizards back to their caves.])(;B[qi];W[sc];B[sg];W[sd]C[CORRECT
+
+Yes! Black has lived in sente and sent the four White wizards back to their caves.]))(;B[se];W[ri](;B[si];W[sh]C[WRONG
+
+Ouch...])(;B[sh];W[qi]C[WRONG
+
+Ouch...]))(;B[qi];W[si]C[WRONG
+
+Alas...]))(;B[qf];W[rg];B[rf];W[ri]C[WRONG
+
+Black is captured.]))(;B[rg];W[ri]C[WRONG
+
+Oops, White has captured Black...])(;B[sh];W[rg](;B[rf];W[sg];B[rh];W[qg];B[qf];W[ri]C[WRONG
+
+Black is one liberty short.])(;B[rh];W[qg]C[WRONG
+
+It seems that Black cannot contain White!])))

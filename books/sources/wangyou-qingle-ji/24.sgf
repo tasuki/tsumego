@@ -1,0 +1,11 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[24. A Little Conundrum]SZ[19]AB[ra][rb][qb][pb][qd][qe][pe]AW[ob][nc][od][pd][ne][og][qf][qh][rf][sf]PL[W]C[Hmmm...Shouldn't take White too long to kill Black's corner?
+
+Hint: The first and second moves are really important.](;W[sd];B[sc]C[Now what?](;W[sb];B[rc];W[pa]LB[pc:A]LB[rd:B]C[CORRECT
+
+Now it's A and B which are miai...in White's favor! Black dies!])(;W[rc];B[sb]LB[pa:A]LB[rd:B]C[WRONG
+
+A and B are miai...]))(;W[rd];B[rc]LB[pa:A]LB[re:B]C[WRONG
+
+A and B are miai...])(;W[sc];B[sb];W[pa];B[rd];W[sd];B[rc]LB[pc:A]LB[se:B]C[WRONG
+
+A and B are miai, so Black lives.]))

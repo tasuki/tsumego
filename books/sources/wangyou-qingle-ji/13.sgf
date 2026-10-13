@@ -1,0 +1,11 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[13. Escape of the Four Wizards (revised)]SZ[19]AB[qd][qe][qf][re][pc][pb][nc][nd][me][le][ke][kf][mf][og]AW[jc][md][ne][oe][pd][pe][qb][qc][rb][rc][lc]PL[W]TR[lc]LB[ld:A]C[White to break his four wizard stones free.
+
+Hint: This problem is trivial now; the original problem had the triangled White stone at A; however, White would not succeed in that setting. Feel free to play it out on a board and see why! :D](;W[oc];B[ob];W[nb];B[mb];W[na];B[mc](;W[pa];B[od];W[oa];B[oc];W[ld]C[CORRECT
+
+White wins by one liberty! Yay!])(;W[od];B[ma]C[WRONG
+
+Uh-oh, Black can capture these two White stones...]))(;W[ob];B[oc]C[WRONG
+
+Hmmm, not quite...])(;W[nb];B[oc];W[mc];B[mb];W[lb];B[pa]C[WRONG
+
+Black will win the semeai! Oops...]))

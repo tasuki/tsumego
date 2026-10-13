@@ -1,0 +1,17 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[32. Se7en Suns]SZ[19]AB[oc][pc][qc][rd][se][rf][qf]AW[nd][od][pd][qe][re][pf][pg][rh][me][nb][ob]PL[B]C[Help Black revive his 7-star galaxy!
+
+Hint: Note that Black has a few free liberties for the bottom two stones...](;B[ra](;W[sb]C[What if White peeps?](;B[rb];W[sc]C[But, White will extend at 4?];B[pb]LB[sd:A]C[CORRECT
+
+No worries. A is not sente, so Black lives unconditionally with two eyes!])(;B[pb];W[rb];B[pa];W[qb]C[WRONG
+
+Unfortunately Black dies...])(;B[sc];W[rb]C[WRONG
+
+White occupies the vital point for both, and Black is dead now.]))(;W[rb]C[White 2 attaches?](;B[sb];W[sc];B[qb];W[sa]C[CORRECT
+
+A ko is relatively best for both.])(;B[qb];W[sb]C[WRONG
+
+Oh no no no, White kills Black...])))(;B[rb];W[qa]C[White 2 is smart...];B[ra];W[sc]LB[sb:A]LB[sd:B]C[WRONG
+
+Now A and B are miai, so Black dies.])(;B[sb];W[ra];B[qa];W[rb]C[WRONG
+
+Impossible to find two eyes here...]))

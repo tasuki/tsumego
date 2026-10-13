@@ -1,0 +1,15 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[16. Cry of the Eight Immortals]SZ[19]AB[cj][dk][dl][jj][cm][cn][bn][dn][en][eo][fo][go][hn][in][jp]AW[bl][cl][dm][em][fn][gn][gm][kl][bp][co][do][ep][fp][gp][hp][ho]PL[B]C[Save the eight Black stones!
+
+Hint: The first move seems dumb, but super effective!](;B[hm];W[gl]C[What's Black's next move?](;B[gk];W[hl];B[il];W[hk]C[How to take advantage of White's shortage of liberties?];B[hj];W[gj];B[fk];W[ij];B[fm]LB[el:B]LB[fl:A]C[CORRECT
+
+There we go! If White captures at A, Black will follow at B.])(;B[el];W[fm];B[gk];W[hl];B[il];W[hk];B[hj];W[ik];B[jk];W[jl];B[im];W[gj];B[ij];W[fk];B[fl];W[gk];B[gi];W[fi]C[WRONG
+
+A delicate escape for White...]))(;B[fl];W[fm](;B[hl];W[bo]C[WRONG
+
+Black has only 2 liberties left.])(;B[gl];W[hm];B[im];W[hl];B[hk];W[il]C[WRONG
+
+White escapes...])(;B[hm];W[gl];B[gk];W[hl]C[Now what?];B[il];W[hk];B[hj];W[ik];B[jk];W[jl];B[im];W[gj](;B[fk];W[ij];B[ii];W[hi];B[el];W[hj]C[WRONG
+
+Failure for Black...])(;B[ij];W[fk];B[el];W[gk];B[gi];W[fi]C[WRONG
+
+White spills into the middle.])))(;B[gl];W[hm];B[fl];W[fm]))

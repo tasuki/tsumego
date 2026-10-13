@@ -1,0 +1,11 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[10. Fall of the Five Knights]SZ[19]AB[pq][qq][pr][qr][rn]AW[rl][ql][pl][ol][nm][np][pp][oq][or][mr]PL[W]C[White to topple over Black's 5-horse chariot!
+
+Hint: White's outside will be strong enough to contain Black, so causing a stir inside should be fine for White.](;W[rp];B[qp](;W[ro];B[qn]C[Black 4 is the strongest reply. Now what?];W[qo];B[po];W[op];B[on]C[Tesuji needed!];W[rs];B[rr];W[ps](;B[sr]C[One more key move needed to topple the chariot.];W[so];B[sn];W[oo];B[pn];W[qs]C[CORRECT
+
+Congratulations! Black's horses are now dead.])(;B[qs]C[In fact, Black 12 seems to yield the best result here...];W[sr]C[CORRECT
+
+Nice! This ko is technically the best outcome for both.]))(;W[qo];B[ro]C[WRONG
+
+Black lives...]))(;W[ro];B[rp];W[qo];B[sr]C[WRONG
+
+Black lives...]))

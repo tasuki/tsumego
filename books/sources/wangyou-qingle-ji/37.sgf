@@ -1,0 +1,15 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[37. Life for All]SZ[19]AB[co][cp][bq][dq][dr][fq][hq][ir][ip][go][fn][fm][dn][dm][ek][dj][ci][bh][cg][bl][cs]AW[do][eo][ep][eq][er][fr][gr][bi][bj][bk][ck][cl][cm][cn][br][cr]PL[W]C[White to make both of his groups alive!
+
+Hint: The first move is a tesuji!](;W[bp];B[bo]C[Great! Now you know what to do!];W[cq];B[ap];W[dp];B[bn];W[bm];B[an];W[al]C[CORRECT
+
+Nice! Both the Black group and the two White groups are unconditionally alive. Peace is finally achieved.])(;W[bo];B[bp](;W[bn];B[ar];W[bs];B[ds];W[ap];B[dp]C[WRONG
+
+Oops! Black lives the corner with a local seki, yet one of the surrounding White groups is dead.])(;W[an];B[ar];W[bs];B[ds];W[ap];B[dp]C[WRONG
+
+Oops! Black lives the corner with a local seki, yet one of the surrounding White groups is dead.]))(;W[cq];B[ar]C[WRONG
+
+This is not valid, but does it remind you of something?])(;W[ar];B[bo];W[cq];B[dp]C[WRONG
+
+Black lives.])(;W[aq];B[ap];W[cq];B[ar]C[WRONG
+
+One step short of success...]))

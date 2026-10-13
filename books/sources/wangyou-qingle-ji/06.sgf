@@ -1,0 +1,13 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[6. Tumble out of Trouble]SZ[19]AB[cc][bg][cg][di][dj][ek][el][bk][bl][cl][dm][gl][dh][bq][cq][dr][ir]AW[ch][ci][cj][ck][dk][dl][ej][ei][em][fn][bp]PL[W]C[White to save his stones from danger.
+
+Hint: Black has many weaknesses, but it's important to choose which to attack first. Also, avoid ko unless necessary.];W[fl];B[fk];W[gk](;B[fj]C[If Black pushes through?];W[fi];B[fm]LB[dg:B]LB[gj:A]C[Black can't extend at A; otherwise White will capture at B.];W[en];B[gn]LB[go:A]C[Please follow at A.];W[go];B[gj]C[Now, how does White approach Black's weakness?];W[cm];B[dn];W[bm];B[bn];W[cn];B[do];W[co];B[cp];W[bj];B[bo]C[Be careful...](;W[bh];B[ai]C[Now, find a way out!];W[dg];B[eh];W[df];B[fh];W[bf];B[ah];W[cf];B[ag];W[aj]LB[ak:A]C[CORRECT
+
+Correct! Black cannot play at A.
+
+Feel free to navigate back and try other variations!])(;W[am];B[bh]C[WRONG
+
+Still no two eyes...]))(;B[fm]C[Well, what if Black captures directly?];W[en];B[gn]LB[go:A]C[Please follow at A.];W[go];B[gj]C[Alright, here comes the challenge...];W[cm];B[dn];W[bm];B[bn];W[cn];B[do];W[co];B[cp];W[bj];B[bh]C[White cannot make two eyes inside...A way out?];W[al];B[bo];W[ak];B[bl];W[ai];B[bi];W[dg];B[eh];W[df](;B[fh]C[Black extends...];W[be];B[ce];W[cf];B[bf];W[bd]C[CORRECT
+
+Nice! Black is short of liberties :)])(;B[ef]C[Black attaches...];W[eg];B[fh]C[What now? (Don't worry about ko.)];W[ce];B[be];W[bd];B[cf]C[Black tries to avoid the ko...];W[cd];B[de];W[fg];B[af]C[Tesuji needed!];W[ac];B[ae]LB[gh:A]C[Please follow at A.];W[gh];B[fi];W[ah];B[dd];W[bc]C[CORRECT
+
+Hooray, Black is captured!])))

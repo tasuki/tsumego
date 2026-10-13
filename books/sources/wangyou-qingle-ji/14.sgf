@@ -1,0 +1,17 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[14. The Fury of Five Tigers]SZ[19]AB[ap][cp][br][dr][cs]AW[an][bn][cn][do][dp][eq][er][es][ds][en]PL[W]C[White to slay the five Black tigers in the corner.
+
+Hint: The first move is very important.](;W[ar];B[as](;W[bo];B[bp];W[cq];B[bq]C[Good! Now, how to create a ko?](;W[cr];B[dq];W[cr];B[cq];W[bs]C[CORRECT
+
+Yes!! White has created a ko in the corner.])(;W[dq];B[cr];W[bs];B[aq]C[WRONG
+
+It's just right for Black to unconditionally live...]))(;W[cq];B[bq]))(;W[cq];B[bq](;W[ar];B[as];W[bs];B[cr]C[WRONG
+
+A and B are miai.])(;W[dq];B[cr];W[ar];B[as];W[bs];B[aq]C[WRONG
+
+Black lives...]))(;W[dq];B[cr](;W[cq];B[bq];W[ar];B[as];W[bs];B[aq]C[WRONG
+
+Doesn't work...])(;W[bp];B[bo];W[cq];B[bq](;W[ar];B[as];W[bs];B[aq]C[WRONG
+
+Life for Black...])(;W[co];B[as];W[bp];B[aq]C[WRONG
+
+Two eyes are sufficient for Black.]))))

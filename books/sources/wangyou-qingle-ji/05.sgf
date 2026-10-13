@@ -1,0 +1,17 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[5. Thunder of the Surrender]SZ[19]AB[pe][qe][od][nd][nc][ne][me][lf][kf][pg]AW[ld][le][mb][ob][pc][pd][oe][of][nf][mf]PL[B]C[Black to save his five enclosed stones by capturing White!
+
+Hint: The first few moves seem obvious...];B[mg];W[ng];B[nh];W[mh];B[lg];W[oh];B[ni];W[og]C[What should Black do now?](;B[pj];W[ph];B[qh];W[qg]C[Here comes the challenge...](;B[rg];W[pf];B[qf];W[qi];B[rh];W[pi];B[qj];W[ri];B[rj];W[sh](;B[oi]LB[rf:A]C[CORRECT
+
+Bravo! Now, White has no choice other than initiating the ko at A. He will die if he fails to find a ko threat.])(;B[rf];W[nb];B[oi];W[mc];B[pg]LB[nb:2]LB[mc:4]LB[rf:1]LB[pg:5]LB[oi:3]C[CORRECT
+
+Bravo! Now, White will die if he fails to find a ko threat.]))(;B[pf];W[qi];B[rh];W[pi](;B[qj];W[ri];B[rg];W[rj];B[rk];W[oj];B[oi];W[qk];B[pk];W[mi]C[WRONG
+
+Uh oh! Black's outside has cracked down.])(;B[ri];W[qj];B[qk];W[oj];B[pk];W[oi]C[WRONG
+
+Alas, White has escaped!])))(;B[oi];W[ph];B[qi];W[qh];B[rh];W[rg];B[qg];W[ri];B[pi];W[sh]C[WRONG])(;B[pi];W[oi];B[oj];W[nj];B[mi];W[pj];B[ok];W[ph](;B[qi];W[qh];B[ri];W[rh];B[qg];W[mj];B[li];W[pk](;B[ol];W[rj]C[WRONG
+
+Oops, White gets out :/])(;B[rg];W[sh];B[si];W[ol]C[WRONG
+
+Oops, White gets out :/]))(;B[qh];W[qi];B[pf];W[pi];B[pk];W[ri]C[WRONG
+
+Too much for Black to hold?])))

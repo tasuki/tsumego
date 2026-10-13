@@ -1,0 +1,13 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[9. Struggle of Gold]SZ[19]AB[am][co][bp][bq][br][dp][ep][fq][fr][hq][io][jj][ik][el]AW[dk][dm][dn][do][cp][cq][dq][eq]PL[W]TR[co]C[White to fight his way out!
+
+Hint: White may capture the triangled Black stone, yet he needs some preparation...];W[fp];B[eo];W[fo];B[en](;W[fl];B[fn]LB[ek:D]LB[dl:B]LB[em:A]LB[bo:C]C[Black could not connect at A (otherwise White would connect at B, and C, D will be miai.)];W[gn];B[go]C[Now what?];W[gp];B[hp];W[ho];B[gq];W[em];B[go];W[fm];B[gm];W[bo]LB[cn:A]C[CORRECT
+
+Perfect! Can you read out what will happen next if Black escapes at A?])(;W[dl];B[cn](;W[fl];B[fn];W[gn];B[go];W[gp];B[hp]C[WRONG
+
+Oops, Black has found a way out...])(;W[fn];B[em];W[fk];B[er]C[WRONG
+
+Black wins the semeai.])(;W[fm];B[em]C[WRONG
+
+White cannot keep Black within three liberties...Black will either escape or win the semeai.])(;W[em];B[fn];W[gn];B[fm];W[gl];B[go];W[gp];B[hp]C[WRONG
+
+Uh oh...])))

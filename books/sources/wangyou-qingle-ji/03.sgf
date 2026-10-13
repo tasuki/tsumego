@@ -1,0 +1,15 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[3. The Lone Swan]SZ[19]AB[qj][qi][qh][rh][qk][ql][rl][pg][pf][oh][nh][pm][pn][ol][nl]AW[ni][nk][ph][pi][pj][pk][pl][qg][rg][qe][qm][rm][qo][rj]PL[B]TR[qh]TR[rh]TR[qi]TR[qj]TR[qk]TR[ql]TR[rl]C[Black to somehow live his swan on the side.
+
+Hint: Don't worry about the Black stones on the outside. Start from the top right White stones.](;B[re];W[rd]C[Now, what is Black's best move?];B[sf];W[qf]LB[rf:A]LB[sh:B]C[Note that White cannot atari at A; otherwise Black will descend at B. What's Black's next optimal move?](;B[qd];W[pe](;B[pd];W[oe]C[The central Black stones are not to be worried about in this problem.];B[sg];W[rc]C[Now, do it again for the bottom right side! :)];B[ro];W[rp];B[sn];W[qn];B[qp];W[po];B[pp];W[oo];B[sm];W[rq](;B[qb]C[CORRECT
+
+With enough liberties to seal White in, Black lives! Well done!])(;B[qr]C[CORRECT
+
+With enough liberties to seal White in, Black lives! Well done!]))(;B[sg];W[qc]C[WRONG
+
+Awww...]))(;B[sg];W[qd]C[WRONG
+
+Not enough to cause a stir...]))(;B[sj];W[si]C[WRONG
+
+Black cannot live from inside...])(;B[nj];W[mj];B[oj];W[oi];B[mi];W[ok];B[mk];W[li];B[mh];W[lk];B[ml];W[nj]C[WRONG
+
+The seal-in does not work...Try considering the sides instead!]))

@@ -1,0 +1,19 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[2. Three Men Make a Tiger]SZ[19]AB[cr][cs][dr][ds][bq][bp][bo][bn][bm][bl]AW[aq][ar][as][cq][cp][eq][er][es][fp][bi][bj][bk][al][cl][cm][cn][co]PL[W]C[White to cause some trouble in Black's stomach.
+
+Hint: Looks like the snapback needs some preparation?](;W[an];B[am];W[br];B[ak];W[dq];B[ap]C[Snapback, huh?];W[bs];B[cr]C[What about this?](;W[cs];B[ds]C[What's the best White can do now?];W[br];B[bs];W[ar];B[aq];W[dr];B[as];W[br];B[ar];W[cs]C[CORRECT
+
+Correct! Three stones are enough to create one troublesome ko for Black :)])(;W[dr];B[cs]C[WRONG
+
+Hmmm, Black lives...]))(;W[br];B[ap](;W[am];B[bs](;W[ar];B[an];W[br];B[ak]C[Will it work?];W[al];B[aq];W[dq];B[as]C[WRONG
+
+Nah. Black lives.])(;W[an];B[ar]C[WRONG
+
+Black lives...]))(;W[dq];B[bs];W[ar];B[br]C[WRONG
+
+Black has two eyes.]))(;W[am];B[an](;W[ap];B[br](;W[ak];B[bs]C[WRONG
+
+Black lives in the corner.])(;W[dq];B[ak];W[al];B[bs]C[WRONG
+
+Black lives in the corner.]))(;W[br];B[ak];W[ap];B[ao];W[al];B[bs]C[WRONG
+
+The capture is sufficient enough for Black to make life.])))

@@ -1,0 +1,11 @@
+(;FF[4]CA[UTF-8]AP[puzzle2sgf:0.1]GM[1]GN[33. Escape from Alcatraz: The Sequel]SZ[19]AB[ca][cb][ab][cc][be][ce][cg][ah][bi][ci][cj][ck][cl][bm][bo][bp][co][br][dq][dr][eq][gr][hr][jc][hc][gc][fe][fg][gi][hj][hl][gm][fo][go][ho][jp][lq][kr][ek]AW[ea][eb][ec][dc][ed][de][df][dg][bf][cf][dh][di][ei][fj][dj][dk][dl][dm][em][fl][fk][en][do][dp][cp][cq][ep][fp][gp][hq][iq][ir]PL[W]LB[gb:A]C[Another of these tricky problems...How does White figure a way out?
+
+Hint: Same technique...Start from playing at A, reduce and squeeze out extra liberties, and snap Black's structure. And note that ko is not the best result...];W[gb];B[ga]LB[cr:A]C[Black 2 is a tesuji, and White cannot make an eye on the top side. Now, please proceed at A (in order to avoid unnecessary branches)...];W[cr];B[cs]C[Time to do something on the first line!](;W[es];B[er];W[fq];B[fr];W[bq];B[aq];W[bs];B[as];W[ds];B[fs]LB[ds:A]C[Please proceed at A.];W[ds];B[es]LB[ap:A]C[Please proceed at A.];W[ap];B[ao];W[hs];B[ap]LB[ad:A]C[Please proceed at A.];W[ad];B[bc];W[gq];B[ar]C[Now, wrap up the liberties here...];W[is];B[bs];W[gs];B[ds];W[cn];B[bn];W[cm];B[eo]TR[cg]C[What can we do to the triangled Black stone?];W[ch];B[bg];W[bh];B[ag]C[Alright. Here comes the key move! Timing is important!](;W[bl];B[al](;W[bk];B[ak];W[ai];B[aj];W[af]LB[ai:A]LB[am:B]C[CORRECT
+
+Oh là là! Finally, White has captured the four Black stones for life! (A and B are miai)])(;W[ai];B[aj];W[af];B[ai];W[bk];B[am]C[WRONG
+
+Wrong timing...Black lives.]))(;W[ai];B[aj];W[af];B[ai];W[bl];B[al];W[bk];B[am]C[WRONG
+
+Wrong timing leads to Black's life...]))(;W[bq];B[aq];W[es];B[er];W[fq];B[fr])(;W[fr];B[fq];W[es];B[er]C[WRONG
+
+Unfortunately, this does not work for White...]))
