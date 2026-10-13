@@ -44,6 +44,10 @@ From the `books` directory:
     --source-map sources/guan-zi-pu/source-map.csv \
     sources/guan-zi-pu/gzp{1,2,3}.sgf problems/guan-zi-pu.txt
 
+# Import Shikatsu Myoki's 120 main problems (excluding variations marked v)
+python3 ../scripts/import_shikatsu_myoki.py \
+    sources/shikatsu-myoki problems/shikatsu-myoki.txt
+
 # Run the validation and round-trip regression tests
 make test
 
@@ -54,6 +58,10 @@ make test
 # Export a standard SGF collection
 ../scripts/problems.py export-sgf problems/xxqj.txt /tmp/xxqj.sgf
 ```
+
+Sectioned collections (Gokyo Shumyo and Shikatsu Myoki) use chapter-problem
+identifiers such as `2-1`. The first problem in each chapter receives a PDF
+link destination used by the clickable section list in the preface.
 
 Generated TeX is a build artifact. A5 and A6 are separately paginated so their
 diagram sizing and layout can diverge without changing problem data. A5 columns

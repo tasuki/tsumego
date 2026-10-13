@@ -13,6 +13,7 @@ from dataclasses import replace
 from pathlib import Path
 
 import problems
+import import_shikatsu_myoki
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -28,6 +29,7 @@ class ProblemDataTests(unittest.TestCase):
             "gokyoshumyo.txt": (520, 8),
             "guan-zi-pu.txt": (1107, 0),
             "hatsuyoron.txt": (183, 0),
+            "shikatsu-myoki.txt": (120, 0),
             "xxqj.txt": (347, 0),
         }
         for filename, (problem_count, label_count) in expected.items():
@@ -86,6 +88,74 @@ class ProblemDataTests(unittest.TestCase):
             ],
             rows,
         )
+
+    def test_shikatsu_myoki_import(self) -> None:
+        source = BOOKS / "sources" / "shikatsu-myoki"
+        selected = import_shikatsu_myoki.selected_sources(source)
+        self.assertEqual(120, len(selected))
+        self.assertEqual(
+            [(1, "1-1", "Killing"), (74, "2-1", "Living"),
+             (118, "3-1", "Ko"), (156, "4-1", "Capturing Races")],
+            [entry for entry in selected if entry[1].endswith("-1")],
+        )
+        self.assertEqual(
+            {str(number) for number, _, _ in selected},
+            {path.stem for path in source.glob("*.sgf")},
+        )
+        self.assertEqual(
+            problems.read_ascii(BOOKS / "problems" / "shikatsu-myoki.txt"),
+            import_shikatsu_myoki.read_collection(source),
+        )
+        with (source / "source-map.csv").open(newline="") as source_map:
+            self.assertEqual(
+                [
+                    {"source_problem": str(number), "book_problem": identifier,
+                     "section": title,
+                     "page_url": f"{import_shikatsu_myoki.SERIES_URL}{number}"}
+                    for number, identifier, title in selected
+                ],
+                list(csv.DictReader(source_map)),
+            )
+
+    def test_senseis_numbered_stones_are_part_of_the_problem(self) -> None:
+        source = BOOKS / "sources" / "shikatsu-myoki" / "74.sgf"
+        root, _ = problems._SgfParser(source.read_text(), source).collection()[0]
+        expected = problems.normalize(problems.Problem(
+            identifier="74",
+            black=frozenset(problems._sgf_setup_points(root["AB"], source)),
+            white=frozenset(problems._sgf_setup_points(root["AW"], source) | {(18, 3)}),
+        ))
+        self.assertEqual(expected, import_shikatsu_myoki.read_diagram(source))
+        # The generic collection importer must still ignore solution moves.
+        self.assertEqual(
+            len(root["AB"]), len(problems.read_sgf(source)[0].white)
+        )
+        self.assertEqual(
+            len(root["AW"]), len(problems.read_sgf(source)[0].black)
+        )
+
+    def test_senseis_diagram_moves_capture_and_follow_caption_player(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "capture.sgf"
+            source.write_text(
+                "(;GM[1]SZ[19]GN[White to play]PL[B]AB[ba]AW[aa];B[ab])"
+            )
+            self.assertEqual(
+                problems.normalize(problems.Problem(
+                    identifier="capture", black=frozenset(),
+                    white=frozenset({(1, 0), (0, 1)}),
+                )),
+                import_shikatsu_myoki.read_diagram(source),
+            )
+
+    def test_shikatsu_index_requires_complete_source_order(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory)
+            (source / "series-index.html").write_text(
+                '<a href="/?ShikatsuMyokiTsumegoSeries1">1</a>'
+            )
+            with self.assertRaisesRegex(ValueError, "expected index entries"):
+                import_shikatsu_myoki.selected_sources(source)
 
     def test_deduplication_only_removes_exact_positions(self) -> None:
         first = problems.Problem(
@@ -267,29 +337,43 @@ class ProblemDataTests(unittest.TestCase):
                     rf"\pdfdest name {{problem-{chapter}-1}} xyz", tex
                 )
 
-    def test_gokyo_contents_pages_match_layouts(self) -> None:
-        source = problems.read_ascii(BOOKS / "problems" / "gokyoshumyo.txt")
-        for profile in ("a5", "a6"):
-            columns = problems.plan_layout(source, profile)
-            actual: list[int] = []
-            for column_index, column in enumerate(columns):
-                page = column_index // 2 + 1 if profile == "a5" else column_index + 1
-                for problem, _ in column:
-                    if re.fullmatch(r"\d+-1", problem.identifier):
-                        actual.append(page)
+    def test_contents_pages_and_links_match_layouts(self) -> None:
+        for collection in ("gokyoshumyo", "shikatsu-myoki"):
+            source = problems.read_ascii(BOOKS / "problems" / f"{collection}.txt")
+            content = (BOOKS / "content" / f"{collection}.tex").read_text()
+            entries = re.findall(r"\\chapterentry\{(\d+)\}\{[^}]+\}\{(\d+)\}", content)
+            for chapter, count in entries:
+                self.assertEqual(
+                    int(count),
+                    sum(problem.identifier.startswith(f"{chapter}-") for problem in source),
+                )
+            self.assertIn("goto name {problem-#1-1}", content)
+            for profile in ("a5", "a6"):
+                with self.subTest(collection=collection, profile=profile):
+                    columns = problems.plan_layout(source, profile)
+                    actual: list[int] = []
+                    for column_index, column in enumerate(columns):
+                        page = column_index // 2 + 1 if profile == "a5" else column_index + 1
+                        for problem, _ in column:
+                            if re.fullmatch(r"\d+-1", problem.identifier):
+                                actual.append(page)
 
-            wrapper = (BOOKS / f"{profile}-gokyoshumyo.tex").read_text()
-            match = re.search(
-                r"\\def\\chapterpage#1\{\\ifcase#1((?:\\or\d+)+)\\fi\}",
-                wrapper,
-            )
-            self.assertIsNotNone(match)
-            listed = [
-                int(page)
-                for page in match.group(1).split(r"\or")
-                if page
-            ]
-            self.assertEqual(actual, listed)
+                    wrapper = (BOOKS / f"{profile}-{collection}.tex").read_text()
+                    match = re.search(
+                        r"\\def\\chapterpage#1\{\\ifcase#1((?:\\or\d+)+)\\fi\}",
+                        wrapper,
+                    )
+                    self.assertIsNotNone(match)
+                    listed = [int(page) for page in match.group(1).split(r"\or") if page]
+                    self.assertEqual(actual, listed)
+                    self.assertEqual(len(entries), len(listed))
+                    with tempfile.TemporaryDirectory() as directory:
+                        output = Path(directory) / "problems.tex"
+                        problems.render_tex(source, output, profile)
+                        targets = re.findall(r"\\pdfdest name \{([^}]+)\} xyz", output.read_text())
+                        self.assertEqual(
+                            [f"problem-{chapter}-1" for chapter, _ in entries], targets
+                        )
 
     def test_normalization_prefers_short_then_narrow(self) -> None:
         original = problems.Problem(

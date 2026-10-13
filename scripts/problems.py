@@ -189,7 +189,7 @@ class _SgfParser:
                 raise self._error(f"property {identifier} has no value")
             properties.setdefault(identifier, []).extend(values)
 
-    def _game_tree(self) -> tuple[dict[str, list[str]], str | None]:
+    def _game_tree(self) -> tuple[list[dict[str, list[str]]], str | None]:
         self._expect("(")
         self._skip_whitespace()
         nodes: list[dict[str, list[str]]] = []
@@ -213,9 +213,10 @@ class _SgfParser:
                 first_player = variation_player
             self._skip_whitespace()
         self._expect(")")
-        return nodes[0], first_player
+        return nodes, first_player
 
-    def collection(self) -> list[tuple[dict[str, list[str]], str | None]]:
+    def sequences(self) -> list[tuple[list[dict[str, list[str]]], str | None]]:
+        """Read each game's main sequence, keeping variations out of the position."""
         # The u-go.net collections have a plain-text provenance paragraph before
         # the first tree. SGF itself starts at the first opening parenthesis.
         match = re.search(r"\(\s*;", self.text)
@@ -223,7 +224,7 @@ class _SgfParser:
             raise self._error("no SGF game trees found")
         self.position = match.start()
 
-        trees: list[tuple[dict[str, list[str]], str | None]] = []
+        trees: list[tuple[list[dict[str, list[str]]], str | None]] = []
         while self.position < len(self.text):
             self._skip_whitespace()
             if self.position == len(self.text):
@@ -232,6 +233,9 @@ class _SgfParser:
                 raise self._error("unexpected text between game trees")
             trees.append(self._game_tree())
         return trees
+
+    def collection(self) -> list[tuple[dict[str, list[str]], str | None]]:
+        return [(nodes[0], player) for nodes, player in self.sequences()]
 
 
 def _sgf_setup_points(values: Iterable[str], path: Path) -> set[tuple[int, int]]:
@@ -797,8 +801,8 @@ def render_tex(
                 [rf"\vskip {leading_rows[column_index]}\goIntHt", ""]
             )
         for problem_index, (problem, padding) in enumerate(column):
-            # Gokyo Shumyo identifiers are chapter-problem pairs.  Give the
-            # first problem of each chapter a stable target for its contents.
+            # Sectioned collections use chapter-problem identifiers. Give
+            # each chapter's first problem a stable target for its contents.
             if re.fullmatch(r"\d+-1", problem.identifier):
                 chunks.extend(
                     [rf"\pdfdest name {{problem-{problem.identifier}}} xyz", ""]
