@@ -1,6 +1,6 @@
-# Guan Zi Pu source SGFs
+# Guanzi Pu source SGFs
 
-These are the three Guan Zi Pu (Kanzufu / Gwan Ja Bo) collections published by
+These are the three Guanzi Pu (Kanzufu / Gwan Ja Bo) collections published by
 Ulrich Goertz at <https://www.u-go.net/classic/index.html#guan-zi-pu>:
 
 | File | Problems | Upstream archive |
@@ -36,13 +36,13 @@ Regenerate the canonical problem data from the repository root with:
 
 ```sh
 python3 scripts/problems.py import-sgf --default-player W --deduplicate-symmetries \
-    --source-map books/sources/guan-zi-pu/source-map.csv \
-    books/sources/guan-zi-pu/gzp{1,2,3}.sgf \
-    books/problems/guan-zi-pu.txt
+    --source-map books/sources/guanzi-pu/source-map.csv \
+    books/sources/guanzi-pu/gzp{1,2,3}.sgf \
+    books/problems/guanzi-pu.txt
 ```
 
 Verify the imported files with:
 
 ```sh
-(cd books/sources/guan-zi-pu && sha256sum -c SHA256SUMS)
+(cd books/sources/guanzi-pu && sha256sum -c SHA256SUMS)
 ```

@@ -3,8 +3,8 @@
 LUATEX ?= luatex
 TEX = $(LUATEX) -no-shell-escape -interaction=nonstopmode -halt-on-error
 
-default: a5-cho-1-elementary.pdf a5-cho-2-intermediate.pdf a5-cho-3-advanced.pdf a5-gokyoshumyo.pdf a5-guan-zi-pu.pdf a5-xxqj.pdf a5-hatsuyoron.pdf a5-shikatsu-myoki.pdf a5-wangyou-qingle-ji.pdf a5-gokyo-seimyo.pdf \
-	     a6-cho-1-elementary.pdf a6-cho-2-intermediate.pdf a6-cho-3-advanced.pdf a6-gokyoshumyo.pdf a6-guan-zi-pu.pdf a6-xxqj.pdf a6-hatsuyoron.pdf a6-shikatsu-myoki.pdf a6-wangyou-qingle-ji.pdf a6-gokyo-seimyo.pdf
+default: a5-cho-1-elementary.pdf a5-cho-2-intermediate.pdf a5-cho-3-advanced.pdf a5-gokyoshumyo.pdf a5-guanzi-pu.pdf a5-xxqj.pdf a5-hatsuyoron.pdf a5-shikatsu-myoki.pdf a5-wangyou-qingle-ji.pdf a5-gokyo-seimyo.pdf \
+	     a6-cho-1-elementary.pdf a6-cho-2-intermediate.pdf a6-cho-3-advanced.pdf a6-gokyoshumyo.pdf a6-guanzi-pu.pdf a6-xxqj.pdf a6-hatsuyoron.pdf a6-shikatsu-myoki.pdf a6-wangyou-qingle-ji.pdf a6-gokyo-seimyo.pdf
 
 a5-cho-1-elementary.pdf: includes/a5*.tex a5-cho-1-elementary.tex content/cho-1-elementary.tex generated/a5-cho-1.tex
 	$(TEX) a5-cho-1-elementary.tex
@@ -24,8 +24,8 @@ a5-gokyo-seimyo.pdf: includes/a5*.tex a5-gokyo-seimyo.tex content/gokyo-seimyo.t
 a5-shikatsu-myoki.pdf: includes/a5*.tex a5-shikatsu-myoki.tex content/shikatsu-myoki.tex generated/a5-shikatsu-myoki.tex
 	$(TEX) a5-shikatsu-myoki.tex
 
-a5-guan-zi-pu.pdf: includes/a5*.tex a5-guan-zi-pu.tex content/guan-zi-pu.tex generated/a5-guan-zi-pu.tex
-	$(TEX) a5-guan-zi-pu.tex
+a5-guanzi-pu.pdf: includes/a5*.tex a5-guanzi-pu.tex content/guanzi-pu.tex generated/a5-guanzi-pu.tex
+	$(TEX) a5-guanzi-pu.tex
 
 a5-xxqj.pdf: includes/a5*.tex a5-xxqj.tex content/xxqj.tex generated/a5-xxqj.tex
 	$(TEX) a5-xxqj.tex
@@ -55,8 +55,8 @@ a6-gokyo-seimyo.pdf: includes/a6*.tex a6-gokyo-seimyo.tex content/gokyo-seimyo.t
 a6-shikatsu-myoki.pdf: includes/a6*.tex a6-shikatsu-myoki.tex content/shikatsu-myoki.tex generated/a6-shikatsu-myoki.tex
 	$(TEX) a6-shikatsu-myoki.tex
 
-a6-guan-zi-pu.pdf: includes/a6*.tex a6-guan-zi-pu.tex content/guan-zi-pu.tex generated/a6-guan-zi-pu.tex
-	$(TEX) a6-guan-zi-pu.tex
+a6-guanzi-pu.pdf: includes/a6*.tex a6-guanzi-pu.tex content/guanzi-pu.tex generated/a6-guanzi-pu.tex
+	$(TEX) a6-guanzi-pu.tex
 
 a6-xxqj.pdf: includes/a6*.tex a6-xxqj.tex content/xxqj.tex generated/a6-xxqj.tex
 	$(TEX) a6-xxqj.tex
@@ -103,8 +103,8 @@ pub: default
 	cp a6-shikatsu-myoki.pdf pub/shikatsu-myoki-mobile.pdf
 	cp a5-wangyou-qingle-ji.pdf pub/wangyou-qingle-ji.pdf
 	cp a6-wangyou-qingle-ji.pdf pub/wangyou-qingle-ji-mobile.pdf
-	cp a5-guan-zi-pu.pdf pub/guan-zi-pu.pdf
-	cp a6-guan-zi-pu.pdf pub/guan-zi-pu-mobile.pdf
+	cp a5-guanzi-pu.pdf pub/guanzi-pu.pdf
+	cp a6-guanzi-pu.pdf pub/guanzi-pu-mobile.pdf
 	cp a5-xxqj.pdf pub/xxqj.pdf
 	cp a6-xxqj.pdf pub/xxqj-mobile.pdf
 	cp a5-hatsuyoron.pdf pub/hatsuyoron.pdf

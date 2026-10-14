@@ -55,8 +55,8 @@ From the `books` directory:
 
 # Import positions, remove duplicates under board symmetry, and renumber
 ../scripts/problems.py import-sgf --default-player W --deduplicate-symmetries \
-    --source-map sources/guan-zi-pu/source-map.csv \
-    sources/guan-zi-pu/gzp{1,2,3}.sgf problems/guan-zi-pu.txt
+    --source-map sources/guanzi-pu/source-map.csv \
+    sources/guanzi-pu/gzp{1,2,3}.sgf problems/guanzi-pu.txt
 
 # Import Shikatsu Myoki's 120 main problems (excluding variations marked v)
 python3 ../scripts/import_shikatsu_myoki.py \

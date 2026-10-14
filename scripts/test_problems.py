@@ -31,7 +31,7 @@ class ProblemDataTests(unittest.TestCase):
             "cho-3.txt": (792, 0),
             "gokyoshumyo.txt": (520, 8),
             "gokyo-seimyo.txt": (145, 0),
-            "guan-zi-pu.txt": (1107, 0),
+            "guanzi-pu.txt": (1107, 0),
             "hatsuyoron.txt": (183, 0),
             "shikatsu-myoki.txt": (120, 0),
             "wangyou-qingle-ji.txt": (37, 0),
@@ -45,8 +45,8 @@ class ProblemDataTests(unittest.TestCase):
                     label_count, sum(len(problem.labels) for problem in collection)
                 )
 
-    def test_guan_zi_pu_sgf_import(self) -> None:
-        source_directory = BOOKS / "sources" / "guan-zi-pu"
+    def test_guanzi_pu_sgf_import(self) -> None:
+        source_directory = BOOKS / "sources" / "guanzi-pu"
         imported: list[problems.Problem] = []
         for volume in range(1, 4):
             imported.extend(
@@ -74,7 +74,7 @@ class ProblemDataTests(unittest.TestCase):
             for problem in unique
         ]
         self.assertEqual(
-            problems.read_ascii(BOOKS / "problems" / "guan-zi-pu.txt"),
+            problems.read_ascii(BOOKS / "problems" / "guanzi-pu.txt"),
             expected,
         )
         self.assertEqual(
