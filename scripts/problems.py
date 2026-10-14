@@ -806,7 +806,8 @@ def _tex_escape(value: str) -> str:
 
 
 def render_tex(
-    problems: Sequence[Problem], path: Path, profile: str
+    problems: Sequence[Problem], path: Path, profile: str,
+    *, title_separator: str = ". ",
 ) -> None:
     """Render generated input for the existing go fonts and Plain TeX layout."""
     if profile not in _PROFILE_METRICS:
@@ -839,10 +840,6 @@ def render_tex(
         r"\setbox0\hbox{\gooegb +}\global\goIntHt=\ht0",
         "",
     ]
-    if any(problem.title for problem in problems):
-        title_size = 10 if profile == "a5" else 13
-        chunks.insert(1, r'\font\problemtitle="[fonts/Alegreya-Italic.otf]:mode=node;script=latn;+tlig;+tnum"'
-                      + f" at {title_size}pt")
     for column_index, column in enumerate(columns):
         if leading_rows[column_index]:
             chunks.extend(
@@ -874,7 +871,7 @@ def render_tex(
                         cells.append(r"\0??" + background)
                 chunks.append("".join(cells))
             caption = (
-                r"\problemtitle " + _tex_escape(f"{problem.identifier}. {problem.title}")
+                r"\label " + _tex_escape(f"{problem.identifier}{title_separator}{problem.title}")
                 if problem.title else f"problem {problem.identifier}"
             )
             chunks.extend(
@@ -973,6 +970,10 @@ def _build_parser() -> argparse.ArgumentParser:
 
     renderer = commands.add_parser("render-tex", help="generate Plain TeX diagrams")
     renderer.add_argument("--profile", choices=("a5", "a6"), required=True)
+    renderer.add_argument(
+        "--title-separator", default=". ",
+        help="text between a problem number and its title (default: '. ')",
+    )
     renderer.add_argument("source", type=Path)
     renderer.add_argument("destination", type=Path)
 
@@ -1039,7 +1040,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             marks = f", {triangles} triangled stones" if triangles else ""
             print(f"{args.source}: {len(problems)} problems, {labels} labels{marks}")
         elif args.command == "render-tex":
-            render_tex(read_ascii(args.source), args.destination, args.profile)
+            render_tex(read_ascii(args.source), args.destination, args.profile,
+                       title_separator=args.title_separator)
         elif args.command == "export-sgf":
             write_sgf(read_ascii(args.source), args.destination)
     except (OSError, ValueError) as error:

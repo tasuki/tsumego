@@ -25,14 +25,18 @@ The symbols are:
 - `A` through `Z` — a labelled empty intersection
 
 An optional `title TEXT` line before the grid supplies the caption title.
-Titles are printed immediately below their diagrams alongside the problem number.
+Titles are printed immediately below their diagrams alongside the problem number,
+using the same font and size as ordinary problem-number labels. The default
+separator is a dot and space; Gokyo Seimyo uses `--title-separator ' '` to omit
+the dot without changing other books.
 
 Blank lines and lines starting with `#` are ignored. Omitted intersections to
 the right and below are empty; the underlying board is always 19 by 19. The
 last row and column in the ASCII diagram provide one empty line of context when
 possible. They are not necessarily board edges.
 
-All positions are normalized to **Black to play**. Positions are transformed by
+All problems are normalized to **Black to play**. Gokyo Seimyo's three
+reference diagrams have no player to move and retain their source colours. Positions are transformed by
 one of the eight symmetries of the square to minimize their height and then
 their width, placing local problems toward the top-left. This is the same rule
 used by the historical `scripts/rotate.pl`.
@@ -58,6 +62,10 @@ From the `books` directory:
 python3 ../scripts/import_shikatsu_myoki.py \
     sources/shikatsu-myoki problems/shikatsu-myoki.txt
 
+# Import all Gokyo Seimyo Volume 3 diagrams, including the three references
+python3 ../scripts/import_gokyo_seimyo.py \
+    sources/gokyo-seimyo problems/gokyo-seimyo.txt
+
 # Import all 37 supplied Wangyou Qingle Ji starting positions, in order
 python3 ../scripts/import_wangyou_qingle_ji.py \
     sources/wangyou-qingle-ji problems/wangyou-qingle-ji.txt
@@ -73,8 +81,8 @@ make test
 ../scripts/problems.py export-sgf problems/xxqj.txt /tmp/xxqj.sgf
 ```
 
-Sectioned collections (Gokyo Shumyo and Shikatsu Myoki) use chapter-problem
-identifiers such as `2-1`. The first problem in each chapter receives a PDF
+Sectioned collections (Gokyo Shumyo, Shikatsu Myoki, and Gokyo Seimyo) use
+chapter-problem identifiers such as `2-1`. The first problem in each chapter receives a PDF
 link destination used by the clickable section list in the preface.
 
 Generated TeX is a build artifact. A5 and A6 are separately paginated so their

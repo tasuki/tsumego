@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import io
 import re
 import tempfile
@@ -13,6 +14,7 @@ from dataclasses import replace
 from pathlib import Path
 
 import problems
+import import_gokyo_seimyo
 import import_shikatsu_myoki
 import import_wangyou_qingle_ji
 
@@ -28,6 +30,7 @@ class ProblemDataTests(unittest.TestCase):
             "cho-2.txt": (861, 0),
             "cho-3.txt": (792, 0),
             "gokyoshumyo.txt": (520, 8),
+            "gokyo-seimyo.txt": (145, 0),
             "guan-zi-pu.txt": (1107, 0),
             "hatsuyoron.txt": (183, 0),
             "shikatsu-myoki.txt": (120, 0),
@@ -162,9 +165,18 @@ class ProblemDataTests(unittest.TestCase):
             problems.write_sgf([position], sgf_path)
             self.assertEqual([position], problems.read_sgf(sgf_path, include_titles=True))
             self.assertEqual("", problems.read_sgf(sgf_path)[0].title)
-            problems.render_tex([position], tex_path, "a5")
-            self.assertIn(r"A {\char38} B: 50{\char37} {\char35}1 {\char123}test{\char125}",
-                          tex_path.read_text())
+            for profile in ("a5", "a6"):
+                problems.render_tex([position], tex_path, profile)
+                tex = tex_path.read_text()
+                self.assertIn(r"\label 1. A {\char38} B: 50{\char37} {\char35}1 {\char123}test{\char125}", tex)
+                self.assertNotIn(r"\problemtitle", tex)
+                self.assertEqual(0, problems.main([
+                    "render-tex", "--profile", profile, "--title-separator", " ",
+                    str(ascii_path), str(tex_path),
+                ]))
+                tex = tex_path.read_text()
+                self.assertIn(r"\label 1 A {\char38} B: 50{\char37} {\char35}1 {\char123}test{\char125}", tex)
+                self.assertNotIn(r"\label 1.", tex)
             ascii_path.write_text("problem 1\nx.\n..\ntitle Too late\n")
             with self.assertRaisesRegex(ValueError, "title must occur once before"):
                 problems.read_ascii(ascii_path)
@@ -203,6 +215,102 @@ class ProblemDataTests(unittest.TestCase):
         self.assertEqual([variants[0], different, unmarked], unique)
         with self.assertRaisesRegex(ValueError, "triangle is not on a stone"):
             replace(first, triangles=frozenset({(2, 2)}))
+
+    def test_gokyo_seimyo_import(self) -> None:
+        source = BOOKS / "sources" / "gokyo-seimyo"
+        selected = import_gokyo_seimyo.selected_sources(source)
+        self.assertEqual(145, len(selected))
+        self.assertEqual(
+            [(1, "1-1", "Tesuji inside territories"),
+             (45, "2-1", "Other problems"), (119, "3-1", "Connect underneath"),
+             (129, "4-1", "Cut/connect groups"), (137, "5-1", "Ladder")],
+            [entry for entry in selected if entry[1].endswith("-1")],
+        )
+        self.assertEqual(list(range(1, 146)), [n for n, _, _ in selected])
+        self.assertEqual((145, "5-9", "Ladder"), selected[-1])
+        self.assertEqual((source / "145.sgf").read_bytes(),
+                         (source / "146.sgf").read_bytes())
+        self.assertEqual(
+            [(66, "2-22", "Other problems"), (68, "2-24", "Other problems"),
+             (69, "2-25", "Other problems")],
+            [entry for entry in selected if entry[0] in (66, 68, 69)],
+        )
+        imported = import_gokyo_seimyo.read_collection(source)
+        self.assertEqual(
+            problems.read_ascii(BOOKS / "problems" / "gokyo-seimyo.txt"), imported
+        )
+        self.assertEqual("5-9", imported[-1].identifier)
+        self.assertNotIn("5-10", [p.identifier for p in imported])
+        self.assertFalse(any(p.triangles for p in imported))
+        self.assertEqual(
+            {"2-22": "hanezeki", "2-24": "eternal life (chosei)",
+             "2-25": "double-ko seki"},
+            {p.identifier: p.title for p in imported if p.title},
+        )
+        for (number, identifier, _), position in zip(selected, imported):
+            path = source / f"{number}.sgf"
+            root, _ = problems._SgfParser(path.read_text(), path).collection()[0]
+            caption = root["GN"][0].strip("()")
+            white_to_play = number in (37, 62) or caption.startswith("White")
+            black_key, white_key = ("AW", "AB") if white_to_play else ("AB", "AW")
+            # Compare independently normalized stones, including the two PL[B]
+            # diagrams whose captions/page actually say White (55 and 62).
+            expected = problems.normalize(problems.Problem(
+                identifier=identifier,
+                black=frozenset(problems._sgf_setup_points(root[black_key], path)),
+                white=frozenset(problems._sgf_setup_points(root[white_key], path)),
+            ))
+            self.assertEqual(expected.black, position.black)
+            self.assertEqual(expected.white, position.white)
+            self.assertFalse(position.labels)
+            if number >= 137:
+                self.assertEqual(19, position.width)
+                self.assertEqual(19, position.height)
+        with (source / "source-map.csv").open(newline="") as source_map:
+            self.assertEqual(
+                [{"source_problem": str(number), "book_problem": identifier,
+                  "section": title,
+                  "page_url": f"{import_gokyo_seimyo.PROBLEM_URL}{number}"}
+                 for number, identifier, title in selected],
+                list(csv.DictReader(source_map)),
+            )
+        for line in (source / "SHA256SUMS").read_text().splitlines():
+            digest, filename = line.split("  ")
+            self.assertEqual(digest, hashlib.sha256((source / filename).read_bytes()).hexdigest())
+        with tempfile.TemporaryDirectory() as directory:
+            for profile in ("a5", "a6"):
+                tex_path = Path(directory) / f"{profile}.tex"
+                problems.render_tex(imported, tex_path, profile, title_separator=" ")
+                tex = tex_path.read_text()
+                for position in imported:
+                    if position.title:
+                        self.assertIn(f"{position.identifier} {position.title}", tex)
+                        self.assertNotIn(f"{position.identifier}. {position.title}", tex)
+                self.assertNotIn("Cut off", tex)
+            sgf_path = Path(directory) / "gokyo-seimyo.sgf"
+            # The generic SGF importer assigns sequential identifiers.
+            sequential = [replace(p, identifier=str(n)) for n, p in enumerate(imported, 1)]
+            problems.write_sgf(sequential, sgf_path)
+            self.assertEqual(
+                [replace(p, title=p.title or p.identifier) for p in sequential],
+                problems.read_sgf(sgf_path, include_titles=True),
+            )
+
+    def test_gokyo_seimyo_rejects_incomplete_index_and_diagram_moves(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory)
+            (source / "series-index.html").write_text(
+                '<a href="/?GokyoSeimyoVolume3Problem1">1</a>'
+            )
+            with self.assertRaisesRegex(ValueError, "expected index entries"):
+                import_gokyo_seimyo.selected_sources(source)
+            sgf = source / "1.sgf"
+            sgf.write_text("(;SZ[19]GN[Black to move]AB[aa]AW[ba];B[ab])")
+            with self.assertRaisesRegex(ValueError, "unexpected moves"):
+                import_gokyo_seimyo.read_diagram(sgf, 1, "1-1")
+            sgf.write_text("(;SZ[19]GN[]PL[B]AB[aa]AW[ba])")
+            with self.assertRaisesRegex(ValueError, "caption does not name"):
+                import_gokyo_seimyo.read_diagram(sgf, 1, "1-1")
 
     def test_shikatsu_myoki_import(self) -> None:
         source = BOOKS / "sources" / "shikatsu-myoki"
@@ -453,7 +561,7 @@ class ProblemDataTests(unittest.TestCase):
                 )
 
     def test_contents_pages_and_links_match_layouts(self) -> None:
-        for collection in ("gokyoshumyo", "shikatsu-myoki"):
+        for collection in ("gokyoshumyo", "shikatsu-myoki", "gokyo-seimyo"):
             source = problems.read_ascii(BOOKS / "problems" / f"{collection}.txt")
             content = (BOOKS / "content" / f"{collection}.tex").read_text()
             entries = re.findall(r"\\chapterentry\{(\d+)\}\{[^}]+\}\{(\d+)\}", content)
@@ -489,6 +597,25 @@ class ProblemDataTests(unittest.TestCase):
                         self.assertEqual(
                             [f"problem-{chapter}-1" for chapter, _ in entries], targets
                         )
+
+    def test_gokyo_seimyo_sections_and_signature_share_a_box(self) -> None:
+        content = (BOOKS / "content" / "gokyo-seimyo.tex").read_text()
+        start = content.index(r"\vbox{") + len(r"\vbox{")
+        depth = 1
+        for end in range(start, len(content)):
+            if content[end] == "{":
+                depth += 1
+            elif content[end] == "}":
+                depth -= 1
+            if depth == 0:
+                break
+        self.assertEqual(0, depth)
+        block = content[start:end]
+        self.assertIn(r"\header Sections", block)
+        self.assertEqual(5, block.count(r"\chapterentry{"))
+        self.assertIn(r"\rightline{\it\me}", block)
+        self.assertIn(r"\rightline{\it November 2026}", block)
+        self.assertNotIn(r"\baselineskip", block)
 
     def test_normalization_prefers_short_then_narrow(self) -> None:
         original = problems.Problem(

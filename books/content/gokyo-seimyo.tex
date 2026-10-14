@@ -1,0 +1,54 @@
+\input includes/\format
+
+\pdfinfo{
+   /Title (Gokyo Seimyo)
+   /Creator (TeX)
+   /Author (Vit Brunner)
+   /CreationDate (20261111233500)
+}
+
+~
+\title
+\parindent=0em
+\baselineskip=1em
+
+\vskip 5cm
+\centerline{\japanesetitle 碁経精妙}
+\bigskip
+\centerline{Gokyo Seimyo}
+\vfill\break
+
+\input includes/\format-motto
+
+\bigskip
+{\header Preface}
+\medskip
+Gokyo Seimyo was published by Hayashi Genbi in 1835 as a sequel to Gokyo Shumyo. This booklet contains 145 diagrams from Volume 3, three of which are reference diagrams, and the rest are problems to solve. Problems are shown as {\bf black to play}.
+\bigskip
+
+\def\chapterentry#1#2#3{%
+  \hbox to \hsize{\strut
+    \pdfstartlink attr{/Border [0 0 0]} goto name {problem-#1-1}%
+    #1. #2 (#3 diagrams)\dotfill \chapterpage{#1}%
+    \pdfendlink}}
+
+\vbox{
+\noindent{\header Sections}
+\medskip
+\chapterentry{1}{Tesuji inside territories}{44}
+\chapterentry{2}{Other problems}{74}
+\chapterentry{3}{Connect underneath}{10}
+\chapterentry{4}{Cut/connect groups}{8}
+\chapterentry{5}{Ladder}{9}
+
+\bigskip
+\rightline{\it\me}
+\rightline{\it November 2026}
+}
+\vfill\break
+
+\input includes/\format-gotc
+\baselineskip=1.1em
+\input generated/\format-gokyo-seimyo
+
+\bye

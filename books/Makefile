@@ -3,8 +3,8 @@
 LUATEX ?= luatex
 TEX = $(LUATEX) -no-shell-escape -interaction=nonstopmode -halt-on-error
 
-default: a5-cho-1-elementary.pdf a5-cho-2-intermediate.pdf a5-cho-3-advanced.pdf a5-gokyoshumyo.pdf a5-guan-zi-pu.pdf a5-xxqj.pdf a5-hatsuyoron.pdf a5-shikatsu-myoki.pdf a5-wangyou-qingle-ji.pdf \
-	     a6-cho-1-elementary.pdf a6-cho-2-intermediate.pdf a6-cho-3-advanced.pdf a6-gokyoshumyo.pdf a6-guan-zi-pu.pdf a6-xxqj.pdf a6-hatsuyoron.pdf a6-shikatsu-myoki.pdf a6-wangyou-qingle-ji.pdf
+default: a5-cho-1-elementary.pdf a5-cho-2-intermediate.pdf a5-cho-3-advanced.pdf a5-gokyoshumyo.pdf a5-guan-zi-pu.pdf a5-xxqj.pdf a5-hatsuyoron.pdf a5-shikatsu-myoki.pdf a5-wangyou-qingle-ji.pdf a5-gokyo-seimyo.pdf \
+	     a6-cho-1-elementary.pdf a6-cho-2-intermediate.pdf a6-cho-3-advanced.pdf a6-gokyoshumyo.pdf a6-guan-zi-pu.pdf a6-xxqj.pdf a6-hatsuyoron.pdf a6-shikatsu-myoki.pdf a6-wangyou-qingle-ji.pdf a6-gokyo-seimyo.pdf
 
 a5-cho-1-elementary.pdf: includes/a5*.tex a5-cho-1-elementary.tex content/cho-1-elementary.tex generated/a5-cho-1.tex
 	$(TEX) a5-cho-1-elementary.tex
@@ -17,6 +17,9 @@ a5-cho-3-advanced.pdf: includes/a5*.tex a5-cho-3-advanced.tex content/cho-3-adva
 
 a5-gokyoshumyo.pdf: includes/a5*.tex a5-gokyoshumyo.tex content/gokyoshumyo.tex generated/a5-gokyoshumyo.tex
 	$(TEX) a5-gokyoshumyo.tex
+
+a5-gokyo-seimyo.pdf: includes/a5*.tex a5-gokyo-seimyo.tex content/gokyo-seimyo.tex generated/a5-gokyo-seimyo.tex
+	$(TEX) a5-gokyo-seimyo.tex
 
 a5-shikatsu-myoki.pdf: includes/a5*.tex a5-shikatsu-myoki.tex content/shikatsu-myoki.tex generated/a5-shikatsu-myoki.tex
 	$(TEX) a5-shikatsu-myoki.tex
@@ -46,6 +49,9 @@ a6-cho-3-advanced.pdf: includes/a6*.tex a6-cho-3-advanced.tex content/cho-3-adva
 a6-gokyoshumyo.pdf: includes/a6*.tex a6-gokyoshumyo.tex content/gokyoshumyo.tex generated/a6-gokyoshumyo.tex
 	$(TEX) a6-gokyoshumyo.tex
 
+a6-gokyo-seimyo.pdf: includes/a6*.tex a6-gokyo-seimyo.tex content/gokyo-seimyo.tex generated/a6-gokyo-seimyo.tex
+	$(TEX) a6-gokyo-seimyo.tex
+
 a6-shikatsu-myoki.pdf: includes/a6*.tex a6-shikatsu-myoki.tex content/shikatsu-myoki.tex generated/a6-shikatsu-myoki.tex
 	$(TEX) a6-shikatsu-myoki.tex
 
@@ -67,13 +73,16 @@ $(patsubst %.tex,%.pdf,$(wildcard a5-*.tex a6-*.tex)): fonts/NotoSerifCJKtc-Regu
 	fonts/Alegreya-Regular.otf fonts/Alegreya-Bold.otf fonts/Alegreya-Italic.otf
 
 
+# Gokyo Seimyo's reference labels omit the dot; other books keep it.
+generated/a5-gokyo-seimyo.tex generated/a6-gokyo-seimyo.tex: TITLE_OPTIONS = --title-separator ' '
+
 generated/a5-%.tex: problems/%.txt ../scripts/problems.py
 	mkdir -p generated
-	../scripts/problems.py render-tex --profile a5 $< $@
+	../scripts/problems.py render-tex --profile a5 $(TITLE_OPTIONS) $< $@
 
 generated/a6-%.tex: problems/%.txt ../scripts/problems.py
 	mkdir -p generated
-	../scripts/problems.py render-tex --profile a6 $< $@
+	../scripts/problems.py render-tex --profile a6 $(TITLE_OPTIONS) $< $@
 
 test:
 	python3 ../scripts/test_problems.py
@@ -88,6 +97,8 @@ pub: default
 	cp a6-cho-3-advanced.pdf pub/cho-3-advanced-mobile.pdf
 	cp a5-gokyoshumyo.pdf pub/gokyoshumyo.pdf
 	cp a6-gokyoshumyo.pdf pub/gokyoshumyo-mobile.pdf
+	cp a5-gokyo-seimyo.pdf pub/gokyo-seimyo.pdf
+	cp a6-gokyo-seimyo.pdf pub/gokyo-seimyo-mobile.pdf
 	cp a5-shikatsu-myoki.pdf pub/shikatsu-myoki.pdf
 	cp a6-shikatsu-myoki.pdf pub/shikatsu-myoki-mobile.pdf
 	cp a5-wangyou-qingle-ji.pdf pub/wangyou-qingle-ji.pdf
