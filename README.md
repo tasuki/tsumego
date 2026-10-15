@@ -15,17 +15,38 @@ modifying each of them to fit the particular sgf/tex files.
 Get it running
 ---------------------
 
-As of 2018 I can get it running on Ubuntu with `texlive` and Kashomon's [go-type1](https://github.com/otrego/go-type1).
+On Debian/Ubuntu, install the build dependencies:
 
-	cd books
-	make
+```sh
+sudo apt install make python3 texlive-luatex texlive-latex-base
+```
+
+- `make`: runs the book build.
+- `python3`: generates diagrams from the problem files and runs the tests
+  (standard library only; no pip packages needed).
+- `texlive-luatex`: provides `luatex`, `luaotfload`, and `luatex85`.
+- `texlive-latex-base`: provides `atbegshi.sty`, used by the A5 layout even
+  though the books use plain TeX rather than LaTeX.
+
+Also install Kashomon's [go-type1](https://github.com/otrego/go-type1), following
+its installation instructions, for the Type 1 Go-diagram fonts and macros
+(`gotcmacs.sty` and `gooemacs.sty`, in its `gooe-fonts/` directory). This is a
+separate dependency, not a Debian package; `texlive-games` is not required.
+
+Then build the books or run the Python tests:
+
+```sh
+cd books
+make
+make test
+```
 
 Fonts and CJK titles
 --------------------
 
 Books use plain LuaTeX (`luatex`, not `lualatex`), with `luaotfload` for OpenType
 fonts and `luatex85` for compatibility with the existing PDF primitives. On
-Debian/Ubuntu install `texlive-luatex` alongside the existing TeX dependencies.
+Debian/Ubuntu the packages listed above provide these TeX dependencies.
 Latin text uses bundled Alegreya Regular, Bold, and Italic OpenType fonts.
 The Type 1 Go-diagram fonts are unchanged.
 
