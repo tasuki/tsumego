@@ -4,11 +4,11 @@
 \pageno=1
 \footline={\hss\folio\hss}
 
-\advance\hoffset -6 true mm
-\hsize=120 true mm
-
 \input gotcmacs.sty
 
 % preserve original dimensions
 \fullhsize=400pt
 \hsize=190pt
+
+% Centre the full two-column block after the A5 shipout's 85% scaling.
+\hoffset=\dimexpr(\pdfpagewidth-\fullhsize*85/100)/2-1in\relax

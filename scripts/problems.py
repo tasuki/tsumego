@@ -852,7 +852,12 @@ def render_tex(
                 chunks.extend(
                     [rf"\pdfdest name {{problem-{problem.identifier}}} xyz", ""]
                 )
-            chunks.append(r"\vbox{\vbox{\goo")
+            # Give board rows their exact glyph width, then centre the board
+            # independently of the full-column caption below it.
+            chunks.append(
+                r"\vbox{\hbox to \hsize{\hfil\vbox{\goo"
+                + rf"\hsize={width}\goIntWd"
+            )
             label_at = {(x, y): label for x, y, label in problem.labels}
             for y in range(_render_height(problem) + padding):
                 cells: list[str] = []
@@ -876,7 +881,7 @@ def render_tex(
             )
             chunks.extend(
                 [
-                    "}",
+                    r"}\hfil}",
                     r"\vbox to 2\goIntHt{\vfil"
                     + rf"\hbox to \hsize{{\hfil {caption}\hfil}}"
                     + r"\vfil}",

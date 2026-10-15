@@ -545,6 +545,27 @@ class ProblemDataTests(unittest.TestCase):
                                 ] + [y for _, y, _ in problem.labels]
                                 self.assertLess(max(occupied_rows), height - 1)
 
+    def test_diagrams_are_centred_at_their_exact_width(self) -> None:
+        position = problems.Problem(
+            identifier="1", black=frozenset({(0, 0)}), white=frozenset(),
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            for profile in ("a5", "a6"):
+                with self.subTest(profile=profile):
+                    output = Path(directory) / f"{profile}.tex"
+                    problems.render_tex([position], output, profile)
+                    tex = output.read_text()
+                    self.assertIn(
+                        r"\hbox to \hsize{\hfil\vbox{\goo\hsize=19\goIntWd",
+                        tex,
+                    )
+                    self.assertIn(
+                        "}\\hfil}\n"
+                        r"\vbox to 2\goIntHt{\vfil"
+                        r"\hbox to \hsize{\hfil problem 1\hfil}",
+                        tex,
+                    )
+
     def test_outputs_preserve_labels(self) -> None:
         source = problems.read_ascii(BOOKS / "problems" / "gokyoshumyo.txt")
         with tempfile.TemporaryDirectory() as directory:
