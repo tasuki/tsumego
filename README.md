@@ -68,6 +68,23 @@ The A5/A6 styles set the title font sizes. `make -C books` builds the books in
 one step, embedding only the glyphs used. There are no separate title PDFs,
 SVGs, or title-generation rules.
 
+PDF navigation
+--------------
+
+All A5/A6 PDFs label introductory pages with lowercase Roman numerals in the
+viewer, then restart at `1` on the first problem page. These labels do not print;
+the A5 problem-page footers are unchanged. The offset follows the actual length
+of the front matter, including longer A6 introductions.
+
+The document outline (also called bookmarks or contents in PDF viewers) includes
+Title and Preface, followed by the named sections for sectioned collections or
+Problems for other books. Section bookmarks use the same problem destinations
+as the clickable contents entries. Open the viewer's outline/bookmarks sidebar
+to see them; support for page labels and outlines depends on the viewer.
+
+`make test` also checks navigation in small compiled PDFs when `luatex` and
+`mutool` (Debian package `mupdf-tools`) are available; otherwise that test skips.
+
 Thanks
 ------
 

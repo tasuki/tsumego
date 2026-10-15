@@ -31,6 +31,7 @@ This booklet contains the 120 main problems, taken from Sensei's Library, omitti
 \bigskip
 
 \def\chapterentry#1#2#3{%
+  \pdfsectionbookmark{#1}{#2}%
   \hbox to \hsize{\strut
     \pdfstartlink attr{/Border [0 0 0]} goto name {problem-#1-1}%
     #1. #2 (#3 problems)\dotfill \chapterpage{#1}%

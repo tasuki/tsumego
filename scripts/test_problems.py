@@ -592,6 +592,7 @@ class ProblemDataTests(unittest.TestCase):
                     sum(problem.identifier.startswith(f"{chapter}-") for problem in source),
                 )
             self.assertIn("goto name {problem-#1-1}", content)
+            self.assertIn(r"\pdfsectionbookmark{#1}{#2}", content)
             for profile in ("a5", "a6"):
                 with self.subTest(collection=collection, profile=profile):
                     columns = problems.plan_layout(source, profile)

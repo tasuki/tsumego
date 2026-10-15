@@ -27,6 +27,7 @@ Gokyo Seimyo was published by Hayashi Genbi in 1835 as a sequel to Gokyo Shumyo.
 \bigskip
 
 \def\chapterentry#1#2#3{%
+  \pdfsectionbookmark{#1}{#2}%
   \hbox to \hsize{\strut
     \pdfstartlink attr{/Border [0 0 0]} goto name {problem-#1-1}%
     #1. #2 (#3 diagrams)\dotfill \chapterpage{#1}%

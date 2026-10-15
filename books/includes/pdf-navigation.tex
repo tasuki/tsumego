@@ -1,0 +1,20 @@
+% Viewer-only navigation; none of this changes the printed pages.
+\pdfoutline goto page 1 {/Fit} {Title}
+\pdfoutline goto page 2 {/Fit} {Preface}
+
+\newif\ifpdfsections
+\def\pdfsectionbookmark#1#2{%
+  \global\pdfsectionstrue
+  \pdfoutline goto name {problem-#1-1} {#1. #2}}
+
+% Call after the front matter has shipped, before resetting Plain TeX's
+% page counter or switching to the two-column output routine. PDF page-label
+% indices are zero-based; Plain TeX's current page number is one-based.
+\def\problempagelabels{%
+  \pdfcatalog{/PageLabels << /Nums [
+    0 << /S /r >>
+    \number\numexpr\pageno-1\relax\space << /S /D /St 1 >>
+  ] >>}%
+  \ifpdfsections\else
+    \pdfoutline goto page \number\pageno\space {/Fit} {Problems}%
+  \fi}

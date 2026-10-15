@@ -29,6 +29,7 @@ Gokyo Shumyo is a classical problem collection published by Hayashi Genbi in 182
 \bigskip
 
 \def\chapterentry#1#2#3{%
+  \pdfsectionbookmark{#1}{#2}%
   \hbox to \hsize{\strut
     \pdfstartlink attr{/Border [0 0 0]} goto name {problem-#1-1}%
     #1. #2 (#3 problems)\dotfill \chapterpage{#1}%
